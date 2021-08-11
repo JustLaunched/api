@@ -1,10 +1,10 @@
-require('dotenv').config();
 import type { ErrorRequestHandler } from 'express';
 import express from 'express';
 import createError from 'http-errors';
 import path from 'path';
 import logger from 'morgan';
 import { routes as router } from './config/routes.config';
+require('dotenv').config();
 
 const app: express.Application = express();
 
@@ -17,12 +17,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v0', router);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -33,6 +33,6 @@ app.use(function(err, req, res, next) {
 
 const port = 3000;
 
-app.listen(port, () => console.log( `Server listening at port ${ port }`));
+app.listen(port, () => console.log(`Server listening at port ${port}`));
 
 module.exports = app;
