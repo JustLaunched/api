@@ -1,16 +1,20 @@
 require('dotenv').config();
-import createError from 'http-errors';
 import type { ErrorRequestHandler } from 'express';
 import express from 'express';
+import createError from 'http-errors';
 import path from 'path';
 import logger from 'morgan';
+import { routes as router } from './config/routes.config';
 
-const app = express();
+const app: express.Application = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// configure routes
+app.use('/api/v0', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
