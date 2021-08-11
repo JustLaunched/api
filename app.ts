@@ -4,6 +4,7 @@ import createError from 'http-errors';
 import path from 'path';
 import logger from 'morgan';
 import { routes as router } from './config/routes.config';
+import './config/db.config';
 require('dotenv').config();
 
 const app: express.Application = express();
