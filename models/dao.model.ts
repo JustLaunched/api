@@ -7,18 +7,18 @@ const daoSchema = new Schema(
   {
     name: {
       type: String,
-      required: 'Name is required',
+      required: 'Name is required'
     },
     description: {
       type: String,
-      required: 'Description is required',
+      required: 'Description is required'
     },
     tokenLaunched: {
       type: Boolean,
-      required: 'This field is required',
+      required: 'This field is required'
     },
     tokenName: {
-      type: String,
+      type: String
     },
     tokenAddress: {
       type: String,
@@ -26,22 +26,22 @@ const daoSchema = new Schema(
         if (value && !validator.isEthereumAddress(value)) {
           throw new Error('Invalid contract address.');
         }
-      },
+      }
     },
     logo: {
       type: String,
       default: function () {
         return `https://avatars.dicebear.com/api/identicon/${this.name}.svg?background=%23FFFFFF`;
-      },
+      }
     },
     website: {
       type: String,
-      validate: (value) => {
+      validate: (value: string) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
-      },
-    },
+      }
+    }
   },
   {
     timestamps: true,
@@ -53,7 +53,7 @@ const daoSchema = new Schema(
         delete ret.__v;
         delete ret.password;
         return ret;
-      },
+      }
     },
     toObject: {
       transform: (doc, ret) => {
@@ -62,8 +62,8 @@ const daoSchema = new Schema(
         delete ret.__v;
         delete ret.password;
         return ret;
-      },
-    },
+      }
+    }
   }
 );
 

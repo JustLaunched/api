@@ -1,7 +1,7 @@
 import type { Router } from 'express';
 import express from 'express';
+import { dao } from '../controllers/daos.controller';
 
-export const routes = () => {
-  const router: Router = express.Router();
-  return router;
-};
+export const router: Router = express.Router();
+
+router.post('/dao', dao.create);
