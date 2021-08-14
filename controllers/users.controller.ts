@@ -3,7 +3,7 @@ import User from '../models/user.model';
 
 const create: RequestHandler = (req, res, next) => {
   User.create(req.body)
-    .then((user) => res.status(201).json(user))
+    .then((user) => res.status(201).json(user)) // ToBeTested
     .catch(next);
 };
 
