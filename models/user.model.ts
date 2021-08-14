@@ -18,7 +18,7 @@ const userSchema = new Schema(
       lowercase: true,
       minlength: [3, 'Your username is too short'],
       maxlength: [35, 'Your username is too long'],
-      validate: (value) => {
+      validate: (value: string) => {
         if (!validator.isAlphanumeric(value)) {
           throw new Error('Your username can only contain letters and numbers');
         }
@@ -53,7 +53,7 @@ const userSchema = new Schema(
       }
     },
     twitter: {
-      type: String,
+      type: String
     },
     website: {
       type: String,
