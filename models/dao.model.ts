@@ -15,7 +15,7 @@ const daoSchema = new Schema(
     },
     tokenLaunched: {
       type: Boolean,
-      required: 'This field is required'
+      required: 'Token Launched is required'
     },
     tokenName: {
       type: String
