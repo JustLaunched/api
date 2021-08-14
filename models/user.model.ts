@@ -33,7 +33,7 @@ const userSchema = new Schema(
         if (value && !validator.isEmail(value)) {
           throw new Error('Invalid email')
         }
-      },
+      }
     },
     password: {
       type: String,
@@ -49,7 +49,7 @@ const userSchema = new Schema(
     coverImage: {
       type: String,
       default: function () {
-        return `https://images.unsplash.com/photo-1514905552197-0610a4d8fd73?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80`
+        return 'https://images.unsplash.com/photo-1514905552197-0610a4d8fd73?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
       }
     },
     twitter: {

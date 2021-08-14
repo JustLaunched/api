@@ -8,5 +8,5 @@ const DAO_CATEGORIES = [
   'Decentralized Exchanges',
   'Insurance',
   'Marketplace',
-  'Non-profit',
-]
+  'Non-profit'
+];
