@@ -16,7 +16,7 @@ const create: RequestHandler = (req, res, next) => {
 };
 
 const get: RequestHandler = (req, res, next) => {
-  const { alias } = req.body;
+  const { alias } = req.params;
   Dao.find({ alias })
     .then((dao: IDao) => res.status(200).json(dao)) // ToBeTested
     .catch(next);
