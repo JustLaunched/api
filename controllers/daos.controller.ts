@@ -17,12 +17,31 @@ const create: RequestHandler = (req, res, next) => {
 
 const get: RequestHandler = (req, res, next) => {
   const { alias } = req.params;
-  Dao.find({ alias })
-    .then((dao: IDao) => res.status(200).json(dao)) // ToBeTested
+  Dao.findOne({ alias })
+    .then((dao: IDao) => {
+      if (!dao) return next(createError(404, 'DAO not found'));
+      else res.status(200).json(dao);
+    })
+    .catch(next);
+};
+
+const remove: RequestHandler = (req, res, next) => {
+  const { alias } = req.params;
+  Dao.findOne({ alias })
+    .then((dao: IDao) => {
+      if (!dao) {
+        return next(createError(404, 'DAO not found'));
+      }
+      // else if (dao.owner != req.user.id) return next(createError(403, 'Only the owner can perform this action.'));
+      else {
+        Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
+      }
+    })
     .catch(next);
 };
 
 export const dao = {
   create,
-  get
+  get,
+  remove
 };
