@@ -34,7 +34,7 @@ const remove: RequestHandler = (req, res, next) => {
       }
       // else if (dao.owner != req.user.id) return next(createError(403, 'Only the owner can perform this action.'));
       else {
-        Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
+        return Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
       }
     })
     .catch(next);

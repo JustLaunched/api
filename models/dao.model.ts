@@ -14,8 +14,8 @@ const daoSchema = new Schema(
       required: 'Alias is required',
       unique: true,
       validate: (value: string) => {
-        if (!validator.isAlpha(value)) {
-          throw new Error('Alias can only contain alphabetic characters');
+        if (!validator.isAlphanumeric(value)) {
+          throw new Error('Alias can only contain letters and numbers');
         }
       }
     },

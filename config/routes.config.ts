@@ -12,3 +12,4 @@ router.delete('/dao/:alias', dao.remove);
 
 // Users
 router.post('/user', user.create);
+router.get('/user/:username', user.get);
