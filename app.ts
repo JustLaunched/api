@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from 'express';
+import mongoose from 'mongoose';
 import express from 'express';
 import createError from 'http-errors';
 import path from 'path';
@@ -19,17 +20,29 @@ app.use('/api/v0', router);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  next(createError(404, 'Route not found'));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (error, req, res, next) {
+  if (error instanceof mongoose.Error.ValidationError) error = createError(400, error);
+  else if (error instanceof mongoose.Error.CastError) error = createError(404, 'Resource not found');
+  else if (error.message.includes('E11000')) error = createError(400, 'Already exists');
+  else if (!error.status) error = createError(500, error);
 
-  // render the error page
-  res.status(err.status || 500);
+  const data = {
+    message: '',
+    errors: {}
+  };
+  data.message = error.message;
+  data.errors = error.errors
+    ? Object.keys(error.errors).reduce(
+        (errors, key) => ({ ...errors, [key]: error.errors[key]?.message || error.errors[key] }),
+        {}
+      )
+    : undefined;
+
+  res.status(error.status).json(data);
 } as ErrorRequestHandler);
 
 const port = 3000;

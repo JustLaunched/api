@@ -7,7 +7,7 @@ export const router: Router = express.Router();
 
 // DAOs
 router.post('/dao', dao.create);
-router.get('/dao/:alias', dao.getDao);
+router.get('/dao/:alias', dao.get);
 
 // Users
 router.post('/user', user.create);
