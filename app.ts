@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import type { ErrorRequestHandler } from 'express';
 import mongoose from 'mongoose';
 import express from 'express';
