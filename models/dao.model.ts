@@ -51,6 +51,11 @@ const daoSchema = new Schema(
           throw new Error('Invalid URL.');
         }
       }
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
     }
   },
   {

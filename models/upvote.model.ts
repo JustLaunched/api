@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const upvoteSchema = new Schema(
   {
     upvotedBy: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
     dao: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Dao',
       required: true
     }
