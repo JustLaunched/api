@@ -23,21 +23,6 @@ const daoSchema = new Schema(
       type: String,
       required: 'Description is required'
     },
-    tokenLaunched: {
-      type: Boolean,
-      required: 'Token Launched is required'
-    },
-    tokenName: {
-      type: String
-    },
-    tokenAddress: {
-      type: String,
-      validate: (value: string) => {
-        if (value && !validator.isEthereumAddress(value)) {
-          throw new Error('Invalid contract address.');
-        }
-      }
-    },
     logo: {
       type: String,
       default: function () {
