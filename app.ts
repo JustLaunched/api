@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import type { ErrorRequestHandler } from 'express';
 import mongoose from 'mongoose';
 import express from 'express';
@@ -6,7 +7,6 @@ import path from 'path';
 import logger from 'morgan';
 import { router } from './config/routes.config';
 import './config/db.config';
-require('dotenv').config();
 
 const app: express.Application = express();
 
