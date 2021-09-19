@@ -1,9 +1,10 @@
+import type { IDao } from '../@types/daos.types';
 import mongoose from 'mongoose';
 import validator from 'validator';
 
 const Schema = mongoose.Schema;
 
-const daoSchema = new Schema(
+const daoSchema = new Schema<IDao>(
   {
     name: {
       type: String,
@@ -26,7 +27,7 @@ const daoSchema = new Schema(
     logo: {
       type: String,
       default: function () {
-        return `https://avatars.dicebear.com/api/identicon/${this.name}.svg?background=%23FFFFFF`;
+        return `https://avatars.dicebear.com/api/identicon/${this.alias}.svg?background=%23FFFFFF`;
       }
     },
     website: {
@@ -40,7 +41,7 @@ const daoSchema = new Schema(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: 'createdBy is required'
     }
   },
   {
@@ -55,6 +56,7 @@ const daoSchema = new Schema(
       }
     },
     toObject: {
+      virtuals: true,
       transform: (doc, ret) => {
         ret.id = doc._id;
         delete ret._id;
@@ -64,6 +66,13 @@ const daoSchema = new Schema(
     }
   }
 );
+
+daoSchema.virtual('token', {
+  ref: 'Token',
+  foreignField: 'dao',
+  localField: '_id',
+  justOne: true
+});
 
 const Dao = mongoose.model('Dao', daoSchema);
 

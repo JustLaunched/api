@@ -8,12 +8,13 @@ const create: RequestHandler = (req, res, next) => {
     .then((user: IUser) => {
       if (user) {
         if (req.body.email === user.email) {
-          return next(createError(400, { errors: { email: 'This email already exists' } }));
+          next(createError(400, { errors: { email: 'This email already exists' } }));
         } else {
-          return next(createError(400, { errors: { username: 'This username is taken' } }));
+          next(createError(400, { errors: { username: 'This username is taken' } }));
         }
       } else {
-        return User.create(req.body).then((user) => res.status(201).json(user));
+        const newUser = User.create(req.body).then((user) => res.status(201).json(user));
+        return newUser;
       }
     })
     .catch(next);
@@ -23,7 +24,7 @@ const get: RequestHandler = (req, res, next) => {
   const { username } = req.params;
   User.findOne({ username })
     .then((user: IUser) => {
-      if (!user) return next(createError(404, 'User not found'));
+      if (!user) next(createError(404, 'User not found'));
       else {
         res.status(200).json(user);
       }

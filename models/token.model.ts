@@ -38,5 +38,5 @@ const tokenSchema = new Schema(
   }
 );
 
-const Token = mongoose.model('Upvote', tokenSchema);
-module.exports = Token;
+const Token = mongoose.model('Token', tokenSchema);
+export default Token;

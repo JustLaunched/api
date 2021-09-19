@@ -1,11 +1,11 @@
+import { Schema } from 'mongoose';
+
 export interface IDao {
   name: String;
   alias: String;
   description: String;
-  tokenLaunched: Boolean;
-  tokenName?: String;
-  tokenAddress?: String;
   logo: String;
   website: String;
   id: String;
+  createdBy: Schema.Types.ObjectId;
 }

@@ -1,9 +1,12 @@
+import type { IUser } from './../@types/users.types';
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 import validator from 'validator';
+import createError from 'http-errors';
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUser>(
   {
     fullName: {
       type: String,
@@ -87,6 +90,30 @@ const userSchema = new Schema(
   }
 );
 
-const User = mongoose.model('User', userSchema);
+userSchema.pre('save', function (next) {
+  if (this.isModified('password')) {
+    bcrypt.hash(this.password, 10).then((hash) => {
+      this.password = hash;
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
+userSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    try {
+      const document = await User.findOne({
+        $or: [{ email: this.email }, { username: this.username }]
+      });
+      if (document) return next(createError(400, 'A user with that email or username already exists.'));
+    } catch (err) {
+      return next(createError(400));
+    }
+  }
+});
+
+const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;
