@@ -1,6 +1,7 @@
 import type { IUser } from './../@types/users.types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
+import passport from 'passport';
 import User from '../models/user.model';
 
 const create: RequestHandler = (req, res, next) => {
@@ -32,7 +33,30 @@ const get: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const login: RequestHandler = (req, res, next) => {
+  passport.authenticate('local-auth', (error, user, validations) => {
+    if (error) {
+      next(error);
+    } else if (!user) {
+      next(createError(400, { errors: validations }));
+    } else {
+      req.login(user, (error) => {
+        if (error) next(error);
+        else res.json(user);
+      });
+    }
+  })(req, res, next);
+};
+
+const logout: RequestHandler = (req, res, next) => {
+  req.logout();
+
+  res.status(204).end();
+};
+
 export const user = {
   create,
-  get
+  get,
+  login,
+  logout
 };

@@ -1,4 +1,6 @@
-export interface IUser extends Document {
+import { Schema } from 'mongoose';
+
+export interface IUser {
   fullName: string;
   username: string;
   email: string;
@@ -7,4 +9,14 @@ export interface IUser extends Document {
   coverImage?: string;
   twitter?: string;
   website?: string;
+  checkPassword: (passwordToCheck: string) => Promise<boolean>;
+}
+
+declare global {
+  namespace Express {
+    interface User {
+      username: string;
+      id?: Schema.Types.ObjectId;
+    }
+  }
 }
