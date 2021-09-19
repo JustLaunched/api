@@ -35,6 +35,7 @@ const get: RequestHandler = (req, res, next) => {
   const { alias } = req.params;
   Dao.findOne({ alias })
     .populate('token')
+    .populate('upvotes')
     .then((dao: IDao) => {
       if (!dao) return next(createError(404, 'DAO not found'));
       else res.status(200).json(dao);

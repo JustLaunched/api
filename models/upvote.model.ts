@@ -28,4 +28,4 @@ const upvoteSchema = new Schema(
 );
 
 const Upvote = mongoose.model('Upvote', upvoteSchema);
-module.exports = Upvote;
+export default Upvote;

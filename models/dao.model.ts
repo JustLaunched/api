@@ -74,6 +74,12 @@ daoSchema.virtual('token', {
   justOne: true
 });
 
+daoSchema.virtual('upvotes', {
+  ref: 'Upvote',
+  foreignField: 'dao',
+  localField: '_id',
+  count: true
+});
 const Dao = mongoose.model('Dao', daoSchema);
 
 export default Dao;
