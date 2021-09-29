@@ -1,6 +1,6 @@
 import passport from 'passport';
 import User from '../models/user.model';
-import LocalStrategy from 'passport-local';
+import * as PassportLocal from 'passport-local';
 
 passport.serializeUser((user, next) => {
   next(null, user.id);
@@ -13,8 +13,7 @@ passport.deserializeUser((id, next) => {
 });
 
 passport.use(
-  'local-auth',
-  new LocalStrategy(
+  new PassportLocal.Strategy(
     {
       usernameField: 'username',
       passwordField: 'password'
@@ -23,13 +22,13 @@ passport.use(
       User.findOne({ username })
         .then((user) => {
           if (!user) {
-            next(null, null, { onSubmit: 'Invalid email or password' });
+            next(null, null, { message: 'Invalid email or password' });
           } else {
             return user.checkPassword(password).then((match) => {
               if (match) {
                 next(null, user);
               } else {
-                next(null, null, { onSubmit: 'Invalid email or password' });
+                next(null, null, { message: 'Invalid email or password' });
               }
             });
           }
@@ -38,3 +37,5 @@ passport.use(
     }
   )
 );
+
+export default passport;

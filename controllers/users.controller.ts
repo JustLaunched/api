@@ -34,7 +34,7 @@ const get: RequestHandler = (req, res, next) => {
 };
 
 const login: RequestHandler = (req, res, next) => {
-  passport.authenticate('local-auth', (error, user, validations) => {
+  passport.authenticate('local', (error, user, validations) => {
     if (error) {
       next(error);
     } else if (!user) {

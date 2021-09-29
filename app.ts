@@ -6,12 +6,16 @@ import createError from 'http-errors';
 import path from 'path';
 import logger from 'morgan';
 import { router } from './config/routes.config';
+import session from './config/session.config';
+import passport from './config/passport.config';
 import './config/db.config';
-
 const app: express.Application = express();
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(session);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,10 +34,7 @@ app.use(function (error, req, res, next) {
   else if (error.message.includes('E11000')) error = createError(400, 'Already exists');
   else if (!error.status) error = createError(500, error);
 
-  const data = {
-    message: '',
-    errors: {}
-  };
+  const data = { message: '', errors: {} };
   data.message = error.message;
   data.errors = error.errors
     ? Object.keys(error.errors).reduce(

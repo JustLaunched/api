@@ -13,3 +13,7 @@ router.delete('/dao/:alias', dao.remove);
 // Users
 router.post('/user', user.create);
 router.get('/user/:username', user.get);
+
+// Auth
+router.post('/login', user.login);
+router.post('/logout', user.logout);
