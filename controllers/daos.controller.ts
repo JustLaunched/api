@@ -48,7 +48,8 @@ const remove: RequestHandler = (req, res, next) => {
     .then((dao: IDao) => {
       if (!dao) {
         return next(createError(404, 'DAO not found'));
-      } else if (dao.createdBy != req.user.id) return next(createError(403, 'Only the owner can perform this action.'));
+      } else if (dao.createdBy !== req.user.id)
+        return next(createError(403, 'Only the owner can perform this action.'));
       else {
         return Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
       }

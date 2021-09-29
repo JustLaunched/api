@@ -11,8 +11,8 @@ import passport from './config/passport.config';
 import './config/db.config';
 const app: express.Application = express();
 
-app.use(logger('dev'));
 app.use(express.json());
+app.use(logger('dev'));
 app.use(session);
 app.use(passport.initialize());
 app.use(passport.session());

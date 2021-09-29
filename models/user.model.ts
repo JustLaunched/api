@@ -64,6 +64,14 @@ const userSchema = new Schema<IUser>(
           throw new Error('Invalid URL.');
         }
       }
+    },
+    ethAddress: {
+      type: String,
+      validate: (value: string) => {
+        if (value && !validator.isEthereumAddress(value)) {
+          throw new Error('Invalid Ethereum address');
+        }
+      }
     }
   },
   {

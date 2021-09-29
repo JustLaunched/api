@@ -22,13 +22,13 @@ passport.use(
       User.findOne({ username })
         .then((user) => {
           if (!user) {
-            next(null, null, { message: 'Invalid email or password' });
+            next(null, null, { message: 'Invalid username or password' });
           } else {
             return user.checkPassword(password).then((match) => {
               if (match) {
                 next(null, user);
               } else {
-                next(null, null, { message: 'Invalid email or password' });
+                next(null, null, { message: 'Invalid username or password' });
               }
             });
           }

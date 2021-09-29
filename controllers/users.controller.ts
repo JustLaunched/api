@@ -33,6 +33,46 @@ const get: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const updateProfile: RequestHandler = (req, res, next) => {
+  const { username, fullName, bio, website, ethAddress, email } = req.body;
+  // TODO => avatar & cover image
+  if (req.user.username !== req.params.username) {
+    next(createError(404, 'Only account owner can edit its profile'));
+  }
+
+  Object.assign(req.user, { username, fullName, bio, website, ethAddress, email });
+  User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true })
+    .then((user) => res.status(202).json(user))
+    .catch(next);
+};
+
+const updatePassword: RequestHandler = (req, res, next) => {
+  const { prevPassword, newPassword, confirmPassword } = req.body;
+
+  if (req.user.username !== req.params.username) {
+    next(createError(404, 'Only account owner can edit its profile'));
+  }
+  if (newPassword !== confirmPassword) {
+    next(createError(400, 'Passwords do not match'));
+  }
+
+  User.findById(req.user.id)
+    .select('+password')
+    .then((user) => {
+      user.checkPassword(prevPassword).then((match) => {
+        if (!match) {
+          next(createError(400, 'Incorrect password'));
+        }
+        user.password = newPassword;
+        user
+          .save({ validateBeforeSave: true })
+          .then((user) => res.status(202).json(user))
+          .catch(next);
+      });
+    })
+    .catch(next);
+};
+
 const login: RequestHandler = (req, res, next) => {
   passport.authenticate('local', (error, user, validations) => {
     if (error) {
@@ -58,5 +98,7 @@ export const user = {
   create,
   get,
   login,
-  logout
+  logout,
+  updateProfile,
+  updatePassword
 };
