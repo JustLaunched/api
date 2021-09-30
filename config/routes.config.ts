@@ -18,6 +18,7 @@ router.post('/user', user.create);
 router.get('/user/:username', user.get);
 router.put('/user/:username/update-profile', isAuthenticated, user.updateProfile);
 router.put('/user/:username/update-password', isAuthenticated, user.updatePassword);
+router.delete('/user/:username/delete', isAuthenticated, user.deleteUser);
 
 // Auth
 router.post('/login', user.login);

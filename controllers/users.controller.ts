@@ -3,6 +3,8 @@ import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';
 import User from '../models/user.model';
+import Dao from '../models/dao.model';
+import Upvote from '../models/dao.model';
 
 const create: RequestHandler = (req, res, next) => {
   User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
@@ -73,6 +75,26 @@ const updatePassword: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const deleteUser: RequestHandler = (req, res, next) => {
+  User.findOne({ name: req.params.username })
+    .then((user) => {
+      if (!user) {
+        return next(createError(404, 'User not found'));
+      }
+      if (req.params.username !== req.user.username) {
+        return next(createError(400, 'Only the owner can perform this action'));
+      }
+      User.findOne({ username: req.params.username }).then(() => {
+        Dao.deleteMany({ createdBy: user.id }).then(() => {
+          Upvote.deleteMany({ upvotedBy: user.id }).then(() => {
+            res.status(204).json({ message: 'Your account has been removed' });
+          });
+        });
+      });
+    })
+    .catch(next);
+};
+
 const login: RequestHandler = (req, res, next) => {
   passport.authenticate('local', (error, user, validations) => {
     if (error) {
@@ -100,5 +122,6 @@ export const user = {
   login,
   logout,
   updateProfile,
-  updatePassword
+  updatePassword,
+  deleteUser
 };
