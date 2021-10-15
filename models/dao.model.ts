@@ -30,6 +30,7 @@ const daoSchema = new Schema<IDao>(
         return `https://avatars.dicebear.com/api/identicon/${this.alias}.svg?background=%23FFFFFF`;
       }
     },
+    // TODO: cover image
     website: {
       type: String,
       validate: (value: string) => {

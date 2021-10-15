@@ -17,7 +17,8 @@ app.use(session);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+// This is actually preventin logs
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // configure routes
 app.use('/api/v0', router);

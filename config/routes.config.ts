@@ -11,6 +11,7 @@ export const router: Router = express.Router();
 // DAOs
 router.post('/dao', isAuthenticated, dao.create);
 router.get('/dao/:alias', dao.get);
+router.put('/dao/:alias/update', isAuthenticated, dao.update);
 router.delete('/dao/:alias', isAuthenticated, dao.remove);
 
 // Users
