@@ -1,3 +1,4 @@
+import { setImageFolder } from './../utils/setImageFolder';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
@@ -12,8 +13,13 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'daoradar',
-    format: 'jpeg'
+    folder: (req: any) => setImageFolder(req.path),
+    format: 'jpeg',
+    public_id: async (req: any) => {
+      const { alias, username } = req.params;
+      const folder = await setImageFolder(req.path);
+      return `${alias || username}_${folder}`;
+    }
   }
 } as Options);
 
