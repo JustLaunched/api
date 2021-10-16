@@ -1,6 +1,7 @@
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const CloudinaryStorage = require('multer-storage-cloudinary').CloudinaryStorage;
+import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import type { Options } from 'multer-storage-cloudinary';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -14,16 +15,20 @@ const storage = new CloudinaryStorage({
     folder: 'daoradar',
     format: 'jpeg'
   }
-});
+} as Options);
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req: Express.Request,
+  file: Express.Multer.File,
+  callback: (error: Error | null, validFile: boolean, message?: string) => void
+) => {
   const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
   const ext = file.originalname.split('.').pop();
   if (!validExtensions.includes(ext)) {
-    req.fileValidationError = 'Please, upload a valid image';
-    return cb(null, false, req.fileValidationError);
+    const message = 'Please, upload a valid image';
+    return callback(null, false, message);
   }
-  cb(null, true);
+  callback(null, true);
 };
 
 export default multer({ storage, fileFilter, limits: { fileSize: 10000000 } }); //10MB

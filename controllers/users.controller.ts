@@ -46,6 +46,21 @@ const updateProfile: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const updateAvatar: RequestHandler = (req, res, next) => {
+  if (req.user.username !== req.params.username) {
+    next(createError(404, 'Only account owner can edit its profile'));
+  }
+
+  if (req.file) {
+    Object.assign(req.user, { avatar: req.file.path });
+    User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true })
+      .then((user) => res.status(202).json(user))
+      .catch(next);
+  } else {
+    next(createError(404, 'You must include a file for updating your avatar'));
+  }
+};
+
 const updatePassword: RequestHandler = (req, res, next) => {
   const { prevPassword, newPassword, confirmPassword } = req.body;
 
@@ -120,6 +135,7 @@ export const user = {
   login,
   logout,
   updateProfile,
+  updateAvatar,
   updatePassword,
   deleteUser
 };
