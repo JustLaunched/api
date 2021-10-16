@@ -82,8 +82,8 @@ const updateLogo: RequestHandler = (req, res, next) => {
           next(createError(404, 'Only dao creator can edit this'));
         }
         Object.assign(dao, { logo: req.file.path });
-        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true }).then((dao: IDao) =>
-          res.status(202).json(dao)
+        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true, useFindAndModify: false }).then(
+          (dao: IDao) => res.status(202).json(dao)
         );
       })
       .catch(next);
@@ -100,8 +100,8 @@ const updateCoverImage: RequestHandler = (req, res, next) => {
           next(createError(404, 'Only dao creator can edit this'));
         }
         Object.assign(dao, { coverImage: req.file.path });
-        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true }).then((dao: IDao) =>
-          res.status(202).json(dao)
+        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true, useFindAndModify: false }).then(
+          (dao: IDao) => res.status(202).json(dao)
         );
       })
       .catch(next);

@@ -41,7 +41,7 @@ const updateProfile: RequestHandler = (req, res, next) => {
   }
 
   Object.assign(req.user, { username, fullName, bio, website, ethAddress, email });
-  User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true })
+  User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true, useFindAndModify: false })
     .then((user) => res.status(202).json(user))
     .catch(next);
 };
@@ -53,7 +53,7 @@ const updateAvatar: RequestHandler = (req, res, next) => {
 
   if (req.file) {
     Object.assign(req.user, { avatar: req.file.path });
-    User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true })
+    User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true, useFindAndModify: false })
       .then((user) => res.status(202).json(user))
       .catch(next);
   } else {
