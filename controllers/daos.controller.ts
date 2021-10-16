@@ -48,7 +48,7 @@ const get: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const update: RequestHandler = (req, res, next) => {
+const updateCommons: RequestHandler = (req, res, next) => {
   const { name: newName, alias: newAlias, description: newDescription, website: newWebsite } = req.body;
   const { alias: aliasFromParams } = req.params;
   const alias = aliasFromParams.toLowerCase();
@@ -74,6 +74,42 @@ const update: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const updateLogo: RequestHandler = (req, res, next) => {
+  if (req.file) {
+    Dao.findOne({ alias: req.params.alias.toLowerCase() })
+      .then((dao: IDao) => {
+        if (req.user.id.toString() !== dao.createdBy.toString()) {
+          next(createError(404, 'Only dao creator can edit this'));
+        }
+        Object.assign(dao, { logo: req.file.path });
+        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true }).then((dao: IDao) =>
+          res.status(202).json(dao)
+        );
+      })
+      .catch(next);
+  } else {
+    next(createError(404, "You must include a file for updating the DAO's logo"));
+  }
+};
+
+const updateCoverImage: RequestHandler = (req, res, next) => {
+  if (req.file) {
+    Dao.findOne({ alias: req.params.alias.toLowerCase() })
+      .then((dao: IDao) => {
+        if (req.user.id.toString() !== dao.createdBy.toString()) {
+          next(createError(404, 'Only dao creator can edit this'));
+        }
+        Object.assign(dao, { coverImage: req.file.path });
+        Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true }).then((dao: IDao) =>
+          res.status(202).json(dao)
+        );
+      })
+      .catch(next);
+  } else {
+    next(createError(404, "You must include a file for updating the DAO's cover image"));
+  }
+};
+
 const remove: RequestHandler = (req, res, next) => {
   const { alias } = req.params;
   Dao.findOne({ alias })
@@ -92,6 +128,8 @@ const remove: RequestHandler = (req, res, next) => {
 export const dao = {
   create,
   get,
-  update,
+  updateCommons,
+  updateLogo,
+  updateCoverImage,
   remove
 };

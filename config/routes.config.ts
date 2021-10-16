@@ -12,7 +12,9 @@ const router: Router = express.Router();
 // DAOs
 router.post('/dao', isAuthenticated, dao.create);
 router.get('/dao/:alias', dao.get);
-router.put('/dao/:alias/update', isAuthenticated, dao.update);
+router.put('/dao/:alias/update', isAuthenticated, dao.updateCommons);
+router.put('/dao/:alias/update-logo', isAuthenticated, storage.single('logo'), dao.updateLogo);
+router.put('/dao/:alias/update-cover-image', isAuthenticated, storage.single('coverImage'), dao.updateCoverImage);
 router.delete('/dao/:alias', isAuthenticated, dao.remove);
 
 // Users

@@ -31,4 +31,4 @@ const fileFilter = (
   callback(null, true);
 };
 
-export default multer({ storage, fileFilter, limits: { fileSize: 10000000 } }); //10MB
+export default multer({ storage, fileFilter, limits: { fileSize: 10000000 } }); // 10MB
