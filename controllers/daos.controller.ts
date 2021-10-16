@@ -52,7 +52,7 @@ const updateCommons: RequestHandler = (req, res, next) => {
   const { name: newName, alias: newAlias, description: newDescription, website: newWebsite } = req.body;
   const { alias: aliasFromParams } = req.params;
   const alias = aliasFromParams.toLowerCase();
-  // TODO => logo & cover image
+
   Dao.findOne({ alias })
     .then((dao: IDao) => {
       if (!dao) {
