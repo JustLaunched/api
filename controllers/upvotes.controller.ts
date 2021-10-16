@@ -1,14 +1,15 @@
+import { RequestHandler } from 'express';
+import { IDao, IUpvote } from './../@types';
 import createError from 'http-errors';
-import Dao from '../models/dao.model';
-import Upvote from '../models/upvote.model';
+import { Dao, Upvote } from '../models';
 
-const upvoteDao = (req, res, next) => {
+const upvoteDao: RequestHandler = (req, res, next) => {
   Dao.find({ alias: req.params.alias })
-    .then((dao) => {
+    .then((dao: IDao) => {
       if (!dao) {
         next(createError(404, 'This DAO does not exist'));
       } else {
-        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote) => {
+        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote: IUpvote) => {
           if (upvote) next(createError(400, 'You already upvoted this DAO'));
           else {
             Upvote.create({ upvotedBy: req.user.id, dao: dao.id }).then(() =>
@@ -24,12 +25,12 @@ const upvoteDao = (req, res, next) => {
     .catch(next);
 };
 
-const downvoteDao = (req, res, next) => {
+const downvoteDao: RequestHandler = (req, res, next) => {
   Dao.find({ alias: req.params.alias })
-    .then((dao) => {
+    .then((dao: IDao) => {
       if (!dao) next(createError(404, 'This post does not exist'));
       else {
-        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote) => {
+        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote: IUpvote) => {
           Upvote.findOneAndDelete({ id: upvote.id }).then(() => {
             res.status(200).json({
               status: 'success',

@@ -3,7 +3,7 @@ import type { ErrorRequestHandler } from 'express';
 import mongoose from 'mongoose';
 import express from 'express';
 import createError from 'http-errors';
-import path from 'path';
+// import path from 'path';
 import logger from 'morgan';
 import { router } from './config/routes.config';
 import session from './config/session.config';

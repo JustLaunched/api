@@ -27,5 +27,4 @@ const upvoteSchema = new Schema(
   }
 );
 
-const Upvote = mongoose.model('Upvote', upvoteSchema);
-export default Upvote;
+export const Upvote = mongoose.model('Upvote', upvoteSchema);

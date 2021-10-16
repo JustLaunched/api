@@ -1,9 +1,10 @@
+import { IToken } from './../@types/tokens.types';
 import validator from 'validator';
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const tokenSchema = new Schema(
+const tokenSchema = new Schema<IToken>(
   {
     tokenName: {
       type: String
@@ -38,5 +39,4 @@ const tokenSchema = new Schema(
   }
 );
 
-const Token = mongoose.model('Token', tokenSchema);
-export default Token;
+export const Token = mongoose.model('Token', tokenSchema);

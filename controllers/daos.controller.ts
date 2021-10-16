@@ -1,8 +1,7 @@
-import createError, { UnavailableForLegalReasons } from 'http-errors';
+import createError from 'http-errors';
 import type { RequestHandler } from 'express';
-import type { IDao } from '../@types/daos.types';
-import Dao from '../models/dao.model';
-import Token from '../models/token.model';
+import type { IDao, IToken } from '../@types';
+import { Dao, Token } from '../models';
 
 const create: RequestHandler = (req, res, next) => {
   const { name, alias, description, logo, website, tokenName, tokenLaunched, tokenAddress } = req.body;
@@ -26,7 +25,7 @@ const create: RequestHandler = (req, res, next) => {
             res.status(201).json(dao);
           } else {
             Token.create({ ...tokenData, dao: dao.id })
-              .then((token) => {
+              .then((token: IToken) => {
                 res.status(201).json({ dao, token });
               })
               .catch((error) => console.log(error));
@@ -81,9 +80,9 @@ const remove: RequestHandler = (req, res, next) => {
     .then((dao: IDao) => {
       if (!dao) {
         return next(createError(404, 'DAO not found'));
-      } else if (dao.createdBy !== req.user.id)
+      } else if (dao.createdBy !== req.user.id) {
         return next(createError(403, 'Only the owner can perform this action.'));
-      else {
+      } else {
         return Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
       }
     })

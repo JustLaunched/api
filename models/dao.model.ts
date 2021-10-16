@@ -1,4 +1,4 @@
-import type { IDao } from '../@types/daos.types';
+import type { IDao } from '../@types';
 import mongoose from 'mongoose';
 import validator from 'validator';
 
@@ -81,6 +81,5 @@ daoSchema.virtual('upvotes', {
   localField: '_id',
   count: true
 });
-const Dao = mongoose.model('Dao', daoSchema);
 
-export default Dao;
+export const Dao = mongoose.model('Dao', daoSchema);

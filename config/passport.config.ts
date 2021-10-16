@@ -1,5 +1,5 @@
 import passport from 'passport';
-import User from '../models/user.model';
+import { User } from '../models/user.model';
 import * as PassportLocal from 'passport-local';
 
 passport.serializeUser((user, next) => {

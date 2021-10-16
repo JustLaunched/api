@@ -3,8 +3,7 @@ import express from 'express';
 // middlewares
 import isAuthenticated from '../middlewares/isAuthenticated.middleware';
 // controllers
-import { dao } from '../controllers/daos.controller';
-import { user } from '../controllers/users.controller';
+import { dao, user } from '../controllers';
 
 export const router: Router = express.Router();
 

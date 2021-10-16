@@ -2,9 +2,7 @@ import type { IUser } from './../@types/users.types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';
-import User from '../models/user.model';
-import Dao from '../models/dao.model';
-import Upvote from '../models/dao.model';
+import { User, Dao, Upvote } from '../models';
 
 const create: RequestHandler = (req, res, next) => {
   User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] })
