@@ -1,11 +1,11 @@
 import type { Router } from 'express';
 import express from 'express';
 // middlewares
-import isAuthenticated from '../middlewares/isAuthenticated.middleware';
+import { isAuthenticated } from '../middlewares';
 // controllers
 import { dao, user } from '../controllers';
 
-export const router: Router = express.Router();
+const router: Router = express.Router();
 
 // DAOs
 router.post('/dao', isAuthenticated, dao.create);
@@ -23,3 +23,5 @@ router.delete('/user/:username/delete', isAuthenticated, user.deleteUser);
 // Auth
 router.post('/login', user.login);
 router.post('/logout', isAuthenticated, user.logout);
+
+export default router;

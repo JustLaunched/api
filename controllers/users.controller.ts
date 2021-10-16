@@ -1,4 +1,4 @@
-import type { IUser } from './../@types/users.types';
+import type { IUser } from './../@types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';

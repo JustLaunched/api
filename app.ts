@@ -5,7 +5,7 @@ import express from 'express';
 import createError from 'http-errors';
 // import path from 'path';
 import logger from 'morgan';
-import { router } from './config/routes.config';
+import router from './config/routes.config';
 import session from './config/session.config';
 import passport from './config/passport.config';
 import './config/db.config';
