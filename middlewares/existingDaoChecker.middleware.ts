@@ -4,7 +4,7 @@ import { RequestHandler } from 'express';
 import createError from 'http-errors';
 
 export const existingDaoChecker: RequestHandler = (req, res, next) => {
-  Dao.findOne({ alias: req.params.alias }).then((dao: IDao) => {
+  Dao.findOne({ alias: req.params.alias.toLowerCase() }).then((dao: IDao) => {
     if (!dao) {
       next(createError(404, 'DAO not found'));
     } else {

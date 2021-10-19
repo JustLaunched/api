@@ -77,12 +77,12 @@ const updateCommons: RequestHandler = (req, res, next) => {
 
 const updateLogo: RequestHandler = (req, res, next) => {
   let prevImagePublicId = '';
-  const { dao } = res.locals;
+  const dao: IDao = res.locals.dao;
   if (req.file) {
     if (req.user.id.toString() !== dao.createdBy.toString()) {
       next(createError(404, 'Only dao creator can edit this'));
     }
-    prevImagePublicId = getPublicIdFromImagePath(dao.coverImage);
+    prevImagePublicId = getPublicIdFromImagePath(dao.logo);
     Object.assign(dao, { logo: req.file.path });
     Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true, useFindAndModify: false })
       .then((updatedDao: IDao) => {
