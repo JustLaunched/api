@@ -54,34 +54,24 @@ const updateCommons: RequestHandler = (req, res, next) => {
   const { name: newName, alias: newAlias, description: newDescription, website: newWebsite } = req.body;
   const { alias: aliasFromParams } = req.params;
   const alias = aliasFromParams.toLowerCase();
-  Dao.findOne({ alias })
-    .then((dao: IDao) => {
-      if (!dao) {
-        next(createError(404, 'DAO not found'));
-      }
-      if (req.user.id!.toString() !== dao.createdBy!.toString()) {
-        next(createError(404, 'Only DAO creator can perform this action'));
-      }
-      Object.assign(dao, {
-        name: newName,
-        alias: newAlias?.toLowerCase(),
-        description: newDescription,
-        website: newWebsite?.toLowerCase()
-      });
-      Dao.findOneAndUpdate({ alias }, dao, { runValidators: true, new: true, useFindAndModify: false })
-        .then((dao: IDao) => res.status(202).json(dao))
-        .catch(next);
-    })
+  const dao: IDao = res.locals.dao;
+
+  Object.assign(dao, {
+    name: newName,
+    alias: newAlias?.toLowerCase(),
+    description: newDescription,
+    website: newWebsite?.toLowerCase()
+  });
+  Dao.findOneAndUpdate({ alias }, dao, { runValidators: true, new: true, useFindAndModify: false })
+    .then((dao: IDao) => res.status(202).json(dao))
     .catch(next);
 };
 
 const updateLogo: RequestHandler = (req, res, next) => {
   let prevImagePublicId = '';
   const dao: IDao = res.locals.dao;
+
   if (req.file) {
-    if (req.user.id.toString() !== dao.createdBy.toString()) {
-      next(createError(404, 'Only dao creator can edit this'));
-    }
     prevImagePublicId = getPublicIdFromImagePath(dao.logo);
     Object.assign(dao, { logo: req.file.path });
     Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true, useFindAndModify: false })
@@ -100,11 +90,9 @@ const updateLogo: RequestHandler = (req, res, next) => {
 
 const updateCoverImage: RequestHandler = (req, res, next) => {
   let prevImagePublicId = '';
-  const dao = res.locals.dao;
+  const dao: IDao = res.locals.dao;
+
   if (req.file) {
-    if (req.user.id.toString() !== dao.createdBy.toString()) {
-      next(createError(404, 'Only dao creator can edit this'));
-    }
     prevImagePublicId = getPublicIdFromImagePath(dao.coverImage);
     Object.assign(dao, { coverImage: req.file.path });
     Dao.findByIdAndUpdate(dao.id, dao, { runValidators: true, new: true, useFindAndModify: false })
@@ -122,17 +110,10 @@ const updateCoverImage: RequestHandler = (req, res, next) => {
 };
 
 const remove: RequestHandler = (req, res, next) => {
-  const { alias } = req.params;
-  Dao.findOne({ alias })
-    .then((dao: IDao) => {
-      if (!dao) {
-        return next(createError(404, 'DAO not found'));
-      } else if (dao.createdBy !== req.user.id) {
-        return next(createError(403, 'Only the owner can perform this action.'));
-      } else {
-        return Dao.findByIdAndDelete(dao.id).then(() => res.status(204).end());
-      }
-    })
+  const dao = res.locals.dao as IDao;
+
+  return Dao.findByIdAndDelete(dao.id)
+    .then(() => res.status(204).end())
     .catch(next);
 };
 

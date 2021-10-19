@@ -1,10 +1,9 @@
-import { existingDaoChecker } from './../middlewares/existingDaoChecker.middleware';
 import type { Router } from 'express';
 import express from 'express';
 // config
 import storage from './storage.config';
 // middlewares
-import { isAuthenticated } from '../middlewares';
+import { isAuthenticated, isDaoOwner, existingDaoChecker } from '../middlewares';
 // controllers
 import { dao, user } from '../controllers';
 
@@ -13,16 +12,24 @@ const router: Router = express.Router();
 // DAOs
 router.post('/dao', isAuthenticated, dao.create);
 router.get('/dao/:alias', dao.get);
-router.put('/dao/:alias/update', isAuthenticated, dao.updateCommons);
-router.put('/dao/:alias/update-logo', isAuthenticated, existingDaoChecker, storage.single('logo'), dao.updateLogo);
+router.put('/dao/:alias/update', isAuthenticated, existingDaoChecker, isDaoOwner, dao.updateCommons);
+router.put(
+  '/dao/:alias/update-logo',
+  isAuthenticated,
+  existingDaoChecker,
+  isDaoOwner,
+  storage.single('logo'),
+  dao.updateLogo
+);
 router.put(
   '/dao/:alias/update-cover-image',
   isAuthenticated,
   existingDaoChecker,
+  isDaoOwner,
   storage.single('coverImage'),
   dao.updateCoverImage
 );
-router.delete('/dao/:alias', isAuthenticated, dao.remove);
+router.delete('/dao/:alias', isAuthenticated, existingDaoChecker, isDaoOwner, dao.remove);
 
 // Users
 router.post('/user', user.create);
