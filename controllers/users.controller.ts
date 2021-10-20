@@ -37,7 +37,7 @@ const updateProfile: RequestHandler = (req, res, next) => {
   const updatedUser: IUserProfile = {
     username: req.body.user,
     fullName: req.body.fullName,
-    bio: req.body?.bio,
+    about: req.body?.about,
     website: req.body.website,
     ethAddress: req.body.ethAddress,
     email: req.body.email

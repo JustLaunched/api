@@ -6,7 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   avatar?: string;
-  bio?: string;
+  about?: string;
   ethAddress?: string;
   coverImage?: string;
   twitter?: string;
@@ -20,7 +20,7 @@ export interface IUserProfile {
   username: string;
   email: string;
   avatar?: string;
-  bio?: string;
+  about?: string;
   ethAddress?: string;
   coverImage?: string;
   twitter?: string;
