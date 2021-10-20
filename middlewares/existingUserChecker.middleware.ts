@@ -9,7 +9,6 @@ export const existingUserChecker: RequestHandler = (req, res, next) => {
       if (!user) {
         next(createError(404, 'User not found'));
       } else {
-        res.locals.user = user;
         next();
       }
     })
