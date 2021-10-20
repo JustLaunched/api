@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { IDao, IUpvote } from './../@types';
 import createError from 'http-errors';
+import { IDao, IUpvote } from '../types';
 import { Dao, Upvote } from '../models';
 
 const upvoteDao: RequestHandler = (req, res, next) => {

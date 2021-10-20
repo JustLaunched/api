@@ -1,4 +1,4 @@
-import type { IUser } from './../@types';
+import type { IUserProfile, IUser } from './../types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';
@@ -34,26 +34,37 @@ const get: RequestHandler = (req, res, next) => {
 };
 
 const updateProfile: RequestHandler = (req, res, next) => {
-  const { username, fullName, bio, website, ethAddress, email } = req.body;
-  // TODO => avatar & cover image
-  if (req.user.username !== req.params.username) {
-    next(createError(404, 'Only account owner can edit its profile'));
-  }
+  const updatedUser: IUserProfile = {
+    username: req.body.user,
+    fullName: req.body.fullName,
+    bio: req.body?.bio,
+    website: req.body.website,
+    ethAddress: req.body.ethAddress,
+    email: req.body.email
+  };
+  const loggedUser = JSON.parse(JSON.stringify(req.user));
 
-  Object.assign(req.user, { username, fullName, bio, website, ethAddress, email });
-  User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true, useFindAndModify: false })
+  Object.keys(updatedUser).forEach((key: keyof IUserProfile) => {
+    if (updatedUser[key] === undefined) {
+      delete updatedUser[key];
+    }
+  });
+  User.findByIdAndUpdate(
+    req.user.id,
+    { ...loggedUser, ...updatedUser },
+    { runValidators: true, new: true, useFindAndModify: false }
+  )
     .then((user) => res.status(202).json(user))
     .catch(next);
 };
 
 const updateAvatar: RequestHandler = (req, res, next) => {
-  if (req.user.username !== req.params.username) {
-    next(createError(404, 'Only account owner can edit its profile'));
-  }
-
   if (req.file) {
-    Object.assign(req.user, { avatar: req.file.path });
-    User.findByIdAndUpdate(req.user.id, req.user, { runValidators: true, new: true, useFindAndModify: false })
+    User.findByIdAndUpdate(
+      req.user.id,
+      { avatar: req.file.path },
+      { runValidators: true, new: true, useFindAndModify: false }
+    )
       .then((user) => res.status(202).json(user))
       .catch(next);
   } else {
@@ -64,9 +75,6 @@ const updateAvatar: RequestHandler = (req, res, next) => {
 const updatePassword: RequestHandler = (req, res, next) => {
   const { prevPassword, newPassword, confirmPassword } = req.body;
 
-  if (req.user.username !== req.params.username) {
-    next(createError(404, 'Only account owner can edit its profile'));
-  }
   if (newPassword !== confirmPassword) {
     next(createError(400, 'Passwords do not match'));
   }
@@ -74,14 +82,14 @@ const updatePassword: RequestHandler = (req, res, next) => {
   User.findById(req.user.id)
     .select('+password')
     .then((user) => {
-      user.checkPassword(prevPassword).then((match) => {
+      user.checkPassword(prevPassword).then((match: boolean) => {
         if (!match) {
           next(createError(400, 'Incorrect password'));
         }
         user.password = newPassword;
         user
           .save({ validateBeforeSave: true })
-          .then((user) => res.status(202).json(user))
+          .then((user: IUser) => res.status(202).json(user))
           .catch(next);
       });
     })
@@ -89,17 +97,12 @@ const updatePassword: RequestHandler = (req, res, next) => {
 };
 
 const deleteUser: RequestHandler = (req, res, next) => {
-  User.findOne({ name: req.params.username })
+  User.findOne({ username: req.params.username.toLowerCase() })
     .then((user) => {
-      if (!user) {
-        return next(createError(404, 'User not found'));
-      }
-      if (req.params.username !== req.user.username) {
-        return next(createError(400, 'Only the owner can perform this action'));
-      }
-      User.findOne({ username: req.params.username }).then(() => {
-        Dao.deleteMany({ createdBy: user.id }).then(() => {
-          Upvote.deleteMany({ upvotedBy: user.id }).then(() => {
+      console.log(user);
+      Dao.deleteMany({ createdBy: user.id }).then(() => {
+        Upvote.deleteMany({ upvotedBy: user.id }).then(() => {
+          User.findByIdAndDelete(user.id).then(() => {
             res.status(204).json({ message: 'Your account has been removed' });
           });
         });

@@ -1,4 +1,4 @@
-import { IToken } from './../@types';
+import { IToken } from './../types';
 import validator from 'validator';
 import mongoose from 'mongoose';
 

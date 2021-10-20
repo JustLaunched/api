@@ -1,4 +1,4 @@
-import type { IUser } from './../@types';
+import type { IUser } from './../types';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import validator from 'validator';

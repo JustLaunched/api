@@ -1,4 +1,4 @@
-import type { IDao } from '../@types';
+import type { IDao } from '../types';
 import mongoose from 'mongoose';
 import validator from 'validator';
 

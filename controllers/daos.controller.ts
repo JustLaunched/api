@@ -2,7 +2,7 @@ import { getPublicIdFromImagePath } from './../utils';
 import createError from 'http-errors';
 import type { RequestHandler } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
-import type { IDao, IToken } from '../@types';
+import type { IDao, IToken } from '../types';
 import { Dao, Token } from '../models';
 
 const create: RequestHandler = (req, res, next) => {
