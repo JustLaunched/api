@@ -1,6 +1,5 @@
 import type { IUser } from './../types';
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 import validator from 'validator';
 import createError from 'http-errors';
 
@@ -8,28 +7,19 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema<IUser>(
   {
-    fullName: {
+    address: {
       type: String,
-      required: 'Name is required',
-      maxlength: [50, 'Your name is too long']
-    },
-    username: {
-      type: String,
-      required: 'Username is required',
-      unique: true,
+      required: 'Ethereum address is required',
       lowercase: true,
-      minlength: [3, 'Your username is too short'],
-      maxlength: [35, 'Your username is too long'],
+      unique: true,
       validate: (value: string) => {
-        if (!validator.isAlphanumeric(value)) {
-          throw new Error('Your username can only contain letters and numbers');
+        if (value && !validator.isEthereumAddress(value)) {
+          throw new Error('Invalid Ethereum address');
         }
       }
     },
     email: {
       type: String,
-      required: 'Email is required',
-      unique: [true, 'There is already an account using this email'],
       lowercase: true,
       validate: (value: string) => {
         if (value && !validator.isEmail(value)) {
@@ -37,15 +27,14 @@ const userSchema = new Schema<IUser>(
         }
       }
     },
-    password: {
+    about: {
       type: String,
-      required: 'A valid password is required'
-      // match: [PASSWORD_PATTERN, 'Invalid password']
+      maxlength: [1000, 'About section is too long.'],
     },
     avatar: {
       type: String,
       default: function () {
-        return `https://avatars.dicebear.com/api/identicon/${this.username}.svg?background=%23FFFFFF`;
+        return `https://avatars.dicebear.com/api/identicon/${this.address}.svg?background=%23FFFFFF`;
       }
     },
     coverImage: {
@@ -65,14 +54,6 @@ const userSchema = new Schema<IUser>(
         }
       }
     },
-    ethAddress: {
-      type: String,
-      validate: (value: string) => {
-        if (value && !validator.isEthereumAddress(value)) {
-          throw new Error('Invalid Ethereum address');
-        }
-      }
-    }
   },
   {
     timestamps: true,
@@ -82,7 +63,6 @@ const userSchema = new Schema<IUser>(
         ret.id = doc._id;
         delete ret._id;
         delete ret.__v;
-        delete ret.password;
         return ret;
       }
     },
@@ -91,39 +71,21 @@ const userSchema = new Schema<IUser>(
         ret.id = doc._id;
         delete ret._id;
         delete ret.__v;
-        delete ret.password;
         return ret;
       }
     }
   }
 );
 
-userSchema.pre('save', function (next) {
-  if (this.isModified('password')) {
-    bcrypt.hash(this.password, 10).then((hash) => {
-      this.password = hash;
-      next();
-    });
-  } else {
-    next();
-  }
-});
-
 userSchema.pre('save', async function (next) {
   if (this.isNew) {
     try {
-      const document = await User.findOne({
-        $or: [{ email: this.email }, { username: this.username }]
-      });
-      if (document) return next(createError(400, 'A user with that email or username already exists.'));
+      const document = await User.findOne({ address: this.address });
+      if (document) return next(createError(400, 'A user with that Ethereum address already exists.'));
     } catch (err) {
       return next(createError(400));
     }
   }
 });
-
-userSchema.methods.checkPassword = function (passwordToCheck) {
-  return bcrypt.compare(passwordToCheck, this.password);
-};
 
 export const User = mongoose.model<IUser>('User', userSchema);

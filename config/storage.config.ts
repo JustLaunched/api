@@ -16,9 +16,9 @@ const storage = new CloudinaryStorage({
     folder: (req: any) => setImageFolder(req.path),
     format: 'jpeg',
     public_id: async (req: any) => {
-      const { alias, username } = req.params;
+      const { alias, address } = req.params;
       const folder = await setImageFolder(req.path);
-      return `${alias || username}_${folder}`;
+      return `${alias || address}_${folder}`;
     }
   }
 } as Options);
@@ -28,7 +28,7 @@ const fileFilter = (
   file: Express.Multer.File,
   callback: (error: Error | null, validFile: boolean, message?: string) => void
 ) => {
-  const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+  const validExtensions = ['png', 'jpg', 'jpeg'];
   const ext = file.originalname.split('.').pop();
   if (!validExtensions.includes(ext)) {
     const message = 'Please, upload a valid image';
@@ -37,4 +37,4 @@ const fileFilter = (
   callback(null, true);
 };
 
-export default multer({ storage, fileFilter, limits: { fileSize: 10000000 } }); // 10MB
+export default multer({ storage, fileFilter, limits: { fileSize: 5000000 } }); // 5MB

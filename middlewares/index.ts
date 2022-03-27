@@ -1,4 +1,4 @@
-export { isDaoOwner } from './isDaoOwner.middleware';
+export { isProductOwner } from './isProductOwner.middleware';
 export { existingUserChecker } from './existingUserChecker.middleware';
-export { existingDaoChecker } from './existingDaoChecker.middleware';
+export { existingProductChecker } from './existingProductChecker.middleware';
 export { isAuthenticated } from './isAuthenticated.middleware';

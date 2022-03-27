@@ -9,15 +9,15 @@ const upvoteSchema = new Schema(
       ref: 'User',
       required: true
     },
-    dao: {
+    product: {
       type: Schema.Types.ObjectId,
-      ref: 'Dao',
+      ref: 'Product',
       required: true
     }
   },
   {
     toJSON: {
-      transform: function (doc, ret) {
+      transform (doc, ret) {
         delete ret._id;
         delete ret.__v;
         ret.id = doc.id;

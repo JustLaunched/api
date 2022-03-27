@@ -8,16 +8,18 @@ import logger from 'morgan';
 import router from './config/routes.config';
 import session from './config/session.config';
 import passport from './config/passport.config';
+import cors from './config/cors.config';
 import './config/db.config';
 const app: express.Application = express();
 
 app.use(express.json());
 app.use(logger('dev'));
 app.use(session);
+app.use(cors);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
-// This is actually preventin logs
+// This is actually preventing logs
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // configure routes
@@ -32,7 +34,7 @@ app.use(function (req, res, next) {
 app.use(function (error, req, res, next) {
   if (error instanceof mongoose.Error.ValidationError) error = createError(400, error);
   else if (error instanceof mongoose.Error.CastError) error = createError(404, 'Resource not found');
-  else if (error.message.includes('E11000')) error = createError(400, 'Already exists');
+  /* else if (error.message.includes('E11000')) error = createError(400, 'Already exists'); */
   else if (!error.status) error = createError(500, error);
 
   const data = { message: '', errors: {} };

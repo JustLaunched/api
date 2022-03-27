@@ -1,27 +1,20 @@
 import { Schema } from 'mongoose';
 
 export interface IUser {
-  fullName: string;
-  username: string;
-  email: string;
-  password: string;
+  address: string;
+  email?: string;
   avatar?: string;
   about?: string;
-  ethAddress?: string;
   coverImage?: string;
   twitter?: string;
   website?: string;
   id: Schema.Types.ObjectId;
-  checkPassword: (passwordToCheck: string) => Promise<boolean>;
 }
 
 export interface IUserProfile {
-  fullName: string;
-  username: string;
-  email: string;
+  email?: string;
   avatar?: string;
   about?: string;
-  ethAddress?: string;
   coverImage?: string;
   twitter?: string;
   website?: string;
@@ -32,7 +25,7 @@ declare global {
   namespace Express {
     // eslint-disable-next-line no-unused-vars
     interface User {
-      username: string;
+      address: string;
       id?: Schema.Types.ObjectId;
     }
   }

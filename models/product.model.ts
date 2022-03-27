@@ -1,18 +1,20 @@
-import type { IDao } from '../types';
+import type { IProduct } from '../types';
 import mongoose from 'mongoose';
 import validator from 'validator';
 
 const Schema = mongoose.Schema;
 
-const daoSchema = new Schema<IDao>(
+const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
-      required: 'Name is required'
+      required: 'Name is required',
+      maxlength: [40, 'Name is too long.'],
     },
     alias: {
       type: String,
       required: 'Alias is required',
+      maxlength: [40, 'Alias is too long.'],
       unique: true,
       validate: (value: string) => {
         if (!validator.isAlphanumeric(value)) {
@@ -20,24 +22,63 @@ const daoSchema = new Schema<IDao>(
         }
       }
     },
+    tagline: {
+      type: String,
+      required: 'Tagline is required',
+      maxlength: [60, 'Tagline is too long.'],
+    },
     description: {
       type: String,
-      required: 'Description is required'
+      required: 'Description is required',
+      minlength: [60, 'Description is too short'],
+      maxlength: [1000, 'Description is too long.'],
     },
     logo: {
       type: String,
-      default: function () {
+      default () {
         return `https://avatars.dicebear.com/api/identicon/${this.alias}.svg?background=%23FFFFFF`;
       }
     },
     coverImage: {
       type: String,
-      default: function () {
+      default () {
         return 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80';
+      }
+    },
+    gallery: {
+      type: [String],
+    },
+    twitter: {
+      type: String,
+      maxlength: [150, 'Twitter URL is too long.'],
+      validate: (value: string) => {
+        if (value && !validator.isURL(value, { require_protocol: true })) {
+          throw new Error('Invalid URL.');
+        }
+      }
+    },
+    discord: {
+      type: String,
+      maxlength: [150, 'Discord URL is too long.'],
+      validate: (value: string) => {
+        if (value && !validator.isURL(value, { require_protocol: true })) {
+          throw new Error('Invalid URL.');
+        }
+      }
+    },
+    telegram: {
+      type: String,
+      maxlength: [150, 'Telegram URL is too long.'],
+      validate: (value: string) => {
+        if (value && !validator.isURL(value, { require_protocol: true })) {
+          throw new Error('Invalid URL.');
+        }
       }
     },
     website: {
       type: String,
+      required: 'Website is required',
+      maxlength: [150, 'Website URL is too long.'],
       validate: (value: string) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
@@ -73,18 +114,11 @@ const daoSchema = new Schema<IDao>(
   }
 );
 
-daoSchema.virtual('token', {
-  ref: 'Token',
-  foreignField: 'dao',
-  localField: '_id',
-  justOne: true
-});
-
-daoSchema.virtual('upvotes', {
+productSchema.virtual('upvotes', {
   ref: 'Upvote',
-  foreignField: 'dao',
+  foreignField: 'product',
   localField: '_id',
   count: true
 });
 
-export const Dao = mongoose.model('Dao', daoSchema);
+export const Product = mongoose.model('Product', productSchema);

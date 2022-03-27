@@ -1,4 +1,4 @@
-const DAO_CATEGORIES = [
+const PRODUCT_CATEGORIES = [
   'Finance', // To be checked
   'Art',
   'Games',

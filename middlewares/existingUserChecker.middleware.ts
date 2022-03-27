@@ -4,7 +4,7 @@ import { RequestHandler } from 'express';
 import createError from 'http-errors';
 
 export const existingUserChecker: RequestHandler = (req, res, next) => {
-  User.findOne({ username: req.params.username.toLowerCase() })
+  User.findOne({ address: req.params.address.toLowerCase() })
     .then((user: IUser) => {
       if (!user) {
         next(createError(404, 'User not found'));

@@ -1,4 +1,3 @@
-export { Dao } from './dao.model';
-export { Token } from './token.model';
+export { Product } from './product.model';
 export { User } from './user.model';
 export { Upvote } from './upvote.model';

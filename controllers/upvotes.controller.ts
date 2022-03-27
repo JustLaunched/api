@@ -1,21 +1,22 @@
 import { RequestHandler } from 'express';
 import createError from 'http-errors';
-import { IDao, IUpvote } from '../types';
-import { Dao, Upvote } from '../models';
+import { IProduct, IUpvote } from '../types';
+import { Product, Upvote } from '../models';
 
-const upvoteDao: RequestHandler = (req, res, next) => {
-  Dao.find({ alias: req.params.alias })
-    .then((dao: IDao) => {
-      if (!dao) {
-        next(createError(404, 'This DAO does not exist'));
+const upvoteProduct: RequestHandler = (req, res, next) => {
+  Product.findOne({ alias: req.params.alias })
+    .then((product: IProduct) => {
+      if (!product) {
+        next(createError(404, 'This product does not exist'));
       } else {
-        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote: IUpvote) => {
-          if (upvote) next(createError(400, 'You already upvoted this DAO'));
+        console.log(product)
+        Upvote.findOne({ upvotedBy: req.user.id, product: product.id }).then((upvote: IUpvote) => {
+          if (upvote) next(createError(400, 'You already upvoted this product'));
           else {
-            Upvote.create({ upvotedBy: req.user.id, dao: dao.id }).then(() =>
+            Upvote.create({ upvotedBy: req.user.id, product: product.id }).then(() =>
               res.status(200).json({
                 status: 'success',
-                message: 'You have upvoted this DAO'
+                message: 'You have upvoted this product'
               })
             );
           }
@@ -25,16 +26,16 @@ const upvoteDao: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const downvoteDao: RequestHandler = (req, res, next) => {
-  Dao.find({ alias: req.params.alias })
-    .then((dao: IDao) => {
-      if (!dao) next(createError(404, 'This post does not exist'));
+const downvoteProduct: RequestHandler = (req, res, next) => {
+  Product.findOne({ alias: req.params.alias })
+    .then((product: IProduct) => {
+      if (!product) next(createError(404, 'This post does not exist'));
       else {
-        Upvote.findOne({ upvotedBy: req.user.id, dao: dao.id }).then((upvote: IUpvote) => {
+        Upvote.findOne({ upvotedBy: req.user.id, product: product.id }).then((upvote: IUpvote) => {
           Upvote.findOneAndDelete({ id: upvote.id }).then(() => {
             res.status(200).json({
               status: 'success',
-              message: 'You have downvoted this DAO'
+              message: 'You have downvoted this product'
             });
           });
         });
@@ -44,6 +45,6 @@ const downvoteDao: RequestHandler = (req, res, next) => {
 };
 
 export const upvote = {
-  upvoteDao,
-  downvoteDao
+  upvoteProduct,
+  downvoteProduct
 };

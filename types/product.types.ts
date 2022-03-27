@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export interface IDao {
+export interface IProduct {
   name: string;
   alias: string;
   description: string;

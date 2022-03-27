@@ -1,3 +1,4 @@
+import { upvote } from './../controllers/upvotes.controller';
 import { existingUserChecker } from './../middlewares/existingUserChecker.middleware';
 import { isUserOwner } from './../middlewares/isUserOwner.middleware';
 import type { Router } from 'express';
@@ -5,48 +6,59 @@ import express from 'express';
 // config
 import storage from './storage.config';
 // middlewares
-import { isAuthenticated, isDaoOwner, existingDaoChecker } from '../middlewares';
+import { isAuthenticated, isProductOwner, existingProductChecker } from '../middlewares';
 // controllers
-import { dao, user } from '../controllers';
+import { product, user } from '../controllers';
 
 const router: Router = express.Router();
 
-// DAOs
-router.post('/dao', isAuthenticated, dao.create);
-router.get('/dao/:alias', dao.get);
-router.put('/dao/:alias/update', isAuthenticated, existingDaoChecker, isDaoOwner, dao.updateCommons);
+// Upvotes
+router.post('/product/:alias/upvote', isAuthenticated, upvote.upvoteProduct);
+router.delete('/product/:alias/upvote', isAuthenticated, upvote.downvoteProduct);
+
+// Products
+router.post('/product', isAuthenticated, product.create);
+router.get('/product/:alias', product.get);
+router.put('/product/:alias/update', isAuthenticated, existingProductChecker, isProductOwner, product.updateCommons);
 router.put(
-  '/dao/:alias/update-logo',
+  '/product/:alias/update-logo',
   isAuthenticated,
-  existingDaoChecker,
-  isDaoOwner,
+  existingProductChecker,
+  isProductOwner,
   storage.single('logo'),
-  dao.updateLogo
+  product.updateLogo
 );
 router.put(
-  '/dao/:alias/update-cover-image',
+  '/product/:alias/update-cover-image',
   isAuthenticated,
-  existingDaoChecker,
-  isDaoOwner,
+  existingProductChecker,
+  isProductOwner,
   storage.single('coverImage'),
-  dao.updateCoverImage
+  product.updateCoverImage
 );
-router.delete('/dao/:alias', isAuthenticated, existingDaoChecker, isDaoOwner, dao.remove);
+router.delete('/product/:alias', isAuthenticated, existingProductChecker, isProductOwner, product.remove);
 
 // Users
 router.post('/user', user.create);
-router.get('/user/:username', user.get);
-router.put('/user/:username/update-profile', isAuthenticated, existingUserChecker, isUserOwner, user.updateProfile);
+router.get('/user/:address', user.get);
+router.put('/user/:address/update-profile', isAuthenticated, existingUserChecker, isUserOwner, user.updateProfile);
 router.put(
-  '/user/:username/update-avatar',
+  '/user/:address/update-avatar',
   isAuthenticated,
   existingUserChecker,
   isUserOwner,
   storage.single('avatar'),
   user.updateAvatar
 );
-router.put('/user/:username/update-password', isAuthenticated, existingUserChecker, isUserOwner, user.updatePassword);
-router.delete('/user/:username/delete', isAuthenticated, existingUserChecker, isUserOwner, user.deleteUser);
+router.put(
+  '/user/:address/update-cover-image',
+  isAuthenticated,
+  existingUserChecker,
+  isUserOwner,
+  storage.single('coverImage'),
+  user.updateCoverImage
+);
+router.delete('/user/:address/delete', isAuthenticated, existingUserChecker, isUserOwner, user.deleteUser);
 
 // Auth
 router.post('/login', user.login);

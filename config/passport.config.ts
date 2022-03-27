@@ -15,22 +15,16 @@ passport.deserializeUser((id, next) => {
 passport.use(
   new PassportLocal.Strategy(
     {
-      usernameField: 'username',
-      passwordField: 'password'
+      usernameField: 'address',
+      passwordField: 'address'
     },
-    (username, password, next) => {
-      User.findOne({ username })
+    (address, addr, next) => {
+      User.findOne({ address })
         .then((user) => {
           if (!user) {
-            next(null, null, { message: 'Invalid username or password' });
+            next(null, null, { message: 'User does not exist' });
           } else {
-            return user.checkPassword(password).then((match) => {
-              if (match) {
-                next(null, user);
-              } else {
-                next(null, null, { message: 'Invalid username or password' });
-              }
-            });
+            next(null, user);
           }
         })
         .catch(next);
