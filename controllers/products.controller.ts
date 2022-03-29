@@ -67,7 +67,6 @@ const updateCommons: RequestHandler = (req, res, next) => {
 const updateLogo: RequestHandler = (req, res, next) => {
   let prevImagePublicId = '';
   const product: IProduct = res.locals.product;
-  console.log('hola')
   if (req.file) {
     prevImagePublicId = getPublicIdFromImagePath(product.logo);
     Object.assign(product, { logo: req.file.path });
