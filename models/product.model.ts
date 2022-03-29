@@ -9,7 +9,7 @@ const productSchema = new Schema<IProduct>(
     name: {
       type: String,
       required: 'Name is required',
-      maxlength: [40, 'Name is too long.'],
+      maxlength: [40, 'Name is too long.']
     },
     alias: {
       type: String,
@@ -25,13 +25,13 @@ const productSchema = new Schema<IProduct>(
     tagline: {
       type: String,
       required: 'Tagline is required',
-      maxlength: [60, 'Tagline is too long.'],
+      maxlength: [60, 'Tagline is too long.']
     },
     description: {
       type: String,
       required: 'Description is required',
       minlength: [60, 'Description is too short'],
-      maxlength: [1000, 'Description is too long.'],
+      maxlength: [1000, 'Description is too long.']
     },
     logo: {
       type: String,

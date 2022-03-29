@@ -25,7 +25,7 @@ const create: RequestHandler = (req, res, next) => {
       Product.create(productData)
         .then((product) => {
           res.status(201).json(product);
-        }).catch((error) => console.log(error));
+        }).catch(next);
     }
   })
 };
