@@ -28,7 +28,7 @@ const fileFilter = (
   file: Express.Multer.File,
   callback: (error: Error | null, validFile: boolean, message?: string) => void
 ) => {
-  const validExtensions = ['png', 'jpg', 'jpeg'];
+  const validExtensions = ['png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG'];
   const ext = file.originalname.split('.').pop();
   if (!validExtensions.includes(ext)) {
     const message = 'Please, upload a valid image';

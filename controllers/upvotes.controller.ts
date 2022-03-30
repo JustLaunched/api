@@ -9,7 +9,6 @@ const upvoteProduct: RequestHandler = (req, res, next) => {
       if (!product) {
         next(createError(404, 'This product does not exist'));
       } else {
-        console.log(product)
         Upvote.findOne({ upvotedBy: req.user.id, product: product.id }).then((upvote: IUpvote) => {
           if (upvote) next(createError(400, 'You already upvoted this product'));
           else {

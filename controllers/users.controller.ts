@@ -121,7 +121,6 @@ const updateCoverImage: RequestHandler = (req, res, next) => {
 const deleteUser: RequestHandler = (req, res, next) => {
   User.findOne({ address: req.params.address.toLowerCase() })
     .then((user) => {
-      console.log(user);
       Product.deleteMany({ createdBy: user.id }).then(() => {
         Upvote.deleteMany({ upvotedBy: user.id }).then(() => {
           User.findByIdAndDelete(user.id).then(() => {
