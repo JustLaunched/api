@@ -46,7 +46,7 @@ const productSchema = new Schema<IProduct>(
       }
     },
     gallery: {
-      type: [String],
+      type: [String]
     },
     twitter: {
       type: String,

@@ -41,6 +41,7 @@ router.delete('/product/:alias', isAuthenticated, existingProductChecker, isProd
 // Users
 router.post('/user', user.create);
 router.get('/user/:address', user.get);
+router.get('/user/:address/products', user.getUserProducts);
 router.put('/user/:address/update-profile', isAuthenticated, existingUserChecker, isUserOwner, user.updateProfile);
 router.put(
   '/user/:address/update-avatar',

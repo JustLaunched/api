@@ -1,4 +1,4 @@
-import type { IUserProfile, IUser } from './../types';
+import type { IUserProfile, IUser, IProduct } from './../types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';
@@ -43,7 +43,7 @@ const login: RequestHandler = (req, res, next) => {
               });
             }
           })(req, res, next);
-        })
+        });
       }
     })
     .catch(next);
@@ -132,9 +132,25 @@ const deleteUser: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const getUserProducts: RequestHandler = (req, res, next) => {
+  const { address } = req.params;
+  User.findOne({ address })
+    .then((user) => {
+      if (user) {
+        Product.find({ createdBy: user.id }).then((products: IProduct) => {
+          res.status(200).json(products);
+        });
+      } else {
+        next(createError(404, 'User not found'));
+      }
+    })
+    .catch(next);
+};
+
 export const user = {
   create,
   get,
+  getUserProducts,
   login,
   logout,
   updateProfile,

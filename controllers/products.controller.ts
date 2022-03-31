@@ -25,11 +25,11 @@ const create: RequestHandler = (req, res, next) => {
       Product.create(productData)
         .then((product) => {
           res.status(201).json(product);
-        }).catch(next);
+        })
+        .catch(next);
     }
-  })
+  });
 };
-
 
 const get: RequestHandler = (req, res, next) => {
   const { alias } = req.params;
@@ -43,7 +43,17 @@ const get: RequestHandler = (req, res, next) => {
 };
 
 const updateCommons: RequestHandler = (req, res, next) => {
-  const { name: newName, tagline: newTagLine, alias: newAlias, description: newDescription, website: newWebsite, twitter: newTwitter, discord: newDiscord, telegram: newTelegram, gallery: newGallery } = req.body;
+  const {
+    name: newName,
+    tagline: newTagLine,
+    alias: newAlias,
+    description: newDescription,
+    website: newWebsite,
+    twitter: newTwitter,
+    discord: newDiscord,
+    telegram: newTelegram,
+    gallery: newGallery
+  } = req.body;
   const { alias: aliasFromParams } = req.params;
   const alias = aliasFromParams.toLowerCase();
   const product: IProduct = res.locals.product;
