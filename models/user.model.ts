@@ -2,6 +2,8 @@ import type { IUser } from './../types';
 import mongoose from 'mongoose';
 import validator from 'validator';
 import createError from 'http-errors';
+import { generateNonce } from '../utils';
+
 
 const Schema = mongoose.Schema;
 
@@ -28,8 +30,8 @@ const userSchema = new Schema<IUser>(
       }
     },
     nonce: {
-      type: Number,
-      default: (Math.random() * (100000000000 - 0) + 0)
+      type: String,
+      default: generateNonce(),
     },
     about: {
       type: String,

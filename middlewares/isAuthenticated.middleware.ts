@@ -8,3 +8,7 @@ export const isAuthenticated: RequestHandler = (req, res, next) => {
     next(createError(401, 'User is not authenticated'));
   }
 };
+
+export const isAuthenticatedWeb3: RequestHandler = (req, res, next) => {
+
+}

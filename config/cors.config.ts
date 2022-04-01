@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import cors from 'cors';
 
-const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:8083')
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000')
   .split(',')
   .map(o => o.trim());
 

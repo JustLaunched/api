@@ -1,3 +1,3 @@
-export function generateNonce():number {
-    return (Math.random() * (100000000000 - 0) + 0);
+export function generateNonce():string {
+    return Math.floor(Math.random() * 1000000).toString();
 }

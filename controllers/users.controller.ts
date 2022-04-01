@@ -18,7 +18,7 @@ const create: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const login: RequestHandler = async (req, res, next) => {
+/*const login: RequestHandler = async (req, res, next) => {
   try {
 
     if(!await User.findOne({ address: req.body.address })) return res.status(400).json("user not found")
@@ -28,9 +28,9 @@ const login: RequestHandler = async (req, res, next) => {
   } catch (error) {
     console.log(error)
   }
-};
+}; */
 
-/*const login: RequestHandler = (req, res, next) => {
+const login: RequestHandler = (req, res, next) => {
   User.findOne({ address: req.body.address })
     .then((user: IUser) => {
       if (user) {
@@ -62,7 +62,7 @@ const login: RequestHandler = async (req, res, next) => {
       }
     })
     .catch(next);
-}; */
+};
 
 const logout: RequestHandler = (req, res, next) => {
   req.logout();
@@ -164,6 +164,7 @@ const getUserProducts: RequestHandler = (req, res, next) => {
 
 const getUserNonce: RequestHandler = async (req, res, next) => {
   const { address } = req.params;
+  console.log(address)
   try {
     const user = await User.findOne({address})
     if(!user) return res.status(404).json("user not found")
