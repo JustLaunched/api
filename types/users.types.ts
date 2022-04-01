@@ -7,6 +7,7 @@ export interface IUser {
   about?: string;
   coverImage?: string;
   twitter?: string;
+  nonce: number;
   website?: string;
   id: Schema.Types.ObjectId;
 }

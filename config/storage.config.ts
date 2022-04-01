@@ -11,7 +11,7 @@ cloudinary.config({
 });
 
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: {
     folder: (req: any) => setImageFolder(req.path),
     format: 'jpeg',

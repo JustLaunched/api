@@ -2,6 +2,7 @@ import type { IUserProfile, IUser, IProduct } from './../types';
 import type { RequestHandler } from 'express';
 import createError from 'http-errors';
 import passport from 'passport';
+import { generateNonce } from "../utils"
 import { User, Product, Upvote } from '../models';
 
 const create: RequestHandler = (req, res, next) => {
@@ -17,7 +18,19 @@ const create: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const login: RequestHandler = (req, res, next) => {
+const login: RequestHandler = async (req, res, next) => {
+  try {
+
+    if(!await User.findOne({ address: req.body.address })) return res.status(400).json("user not found")
+
+
+
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+/*const login: RequestHandler = (req, res, next) => {
   User.findOne({ address: req.body.address })
     .then((user: IUser) => {
       if (user) {
@@ -28,18 +41,20 @@ const login: RequestHandler = (req, res, next) => {
             req.login(user, (error) => {
               if (error) next(error);
               else res.json(user);
+
             });
           }
         })(req, res, next);
       } else {
-        User.create(req.body).then(() => {
-          passport.authenticate('local', (error, user) => {
+        User.create(req.body).then( () => {
+          passport.authenticate('local',  (error, user) => {
             if (error) {
               next(error);
             } else {
-              req.login(user, (error) => {
+              req.login(user, async (error) => {
                 if (error) next(error);
                 else res.json(user);
+                await User.findOneAndUpdate({address: req.body.address}, {nonce: generateNonce()} )
               });
             }
           })(req, res, next);
@@ -47,7 +62,7 @@ const login: RequestHandler = (req, res, next) => {
       }
     })
     .catch(next);
-};
+}; */
 
 const logout: RequestHandler = (req, res, next) => {
   req.logout();
@@ -147,6 +162,19 @@ const getUserProducts: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const getUserNonce: RequestHandler = async (req, res, next) => {
+  const { address } = req.params;
+  try {
+    const user = await User.findOne({address})
+    if(!user) return res.status(404).json("user not found")
+
+    res.status(200).json({nonce: user.nonce});
+
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
 export const user = {
   create,
   get,
@@ -156,5 +184,6 @@ export const user = {
   updateProfile,
   updateAvatar,
   updateCoverImage,
-  deleteUser
+  deleteUser,
+  getUserNonce,
 };
