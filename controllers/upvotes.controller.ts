@@ -28,10 +28,11 @@ const upvoteProduct: RequestHandler = (req, res, next) => {
 const downvoteProduct: RequestHandler = (req, res, next) => {
   Product.findOne({ alias: req.params.alias })
     .then((product: IProduct) => {
-      if (!product) next(createError(404, 'This post does not exist'));
-      else {
+      if (!product) {
+        next(createError(404, 'This post does not exist'));
+      } else {
         Upvote.findOne({ upvotedBy: req.user.id, product: product.id }).then((upvote: IUpvote) => {
-          Upvote.findOneAndDelete({ id: upvote.id }).then(() => {
+          Upvote.findOneAndDelete({ _id: upvote.id }).then(() => {
             res.status(200).json({
               status: 'success',
               message: 'You have downvoted this product'
