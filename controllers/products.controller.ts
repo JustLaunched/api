@@ -34,7 +34,7 @@ const create: RequestHandler = (req, res, next) => {
 const get: RequestHandler = (req, res, next) => {
   const { alias } = req.params;
   Product.findOne({ alias: alias.toLowerCase() })
-    .populate('upvote')
+    .populate('upvotes')
     .then((product: IProduct) => {
       if (!product) return next(createError(404, 'Product not found'));
       else res.status(200).json(product);
