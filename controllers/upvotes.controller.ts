@@ -32,6 +32,7 @@ const downvoteProduct: RequestHandler = (req, res, next) => {
         next(createError(404, 'This post does not exist'));
       } else {
         Upvote.findOne({ upvotedBy: req.user.id, product: product.id }).then((upvote: IUpvote) => {
+          if (!upvote) next(createError(400, 'You have not upvoted this product'));
           Upvote.findOneAndDelete({ _id: upvote.id }).then(() => {
             res.status(200).json({
               status: 'success',

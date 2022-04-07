@@ -9,4 +9,7 @@ export interface IProduct {
   website: string;
   id: string;
   createdBy: Schema.Types.ObjectId;
+  upvotes: number;
+  upvoted: boolean;
+  toObject: () => any;
 }
