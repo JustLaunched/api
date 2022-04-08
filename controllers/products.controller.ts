@@ -50,9 +50,12 @@ const get: RequestHandler = (req, res, next) => {
             } else {
               newProduct.upvoted = false;
             }
-            res.status(200).json(newProduct);
+            return res.status(200).json(newProduct);
           });
         }
+        const newProduct = product.toObject();
+        newProduct.upvoted = false;
+        res.status(200).json(newProduct);
       }
     })
     .catch(next);
