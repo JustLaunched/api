@@ -1,9 +1,10 @@
+import { IUser } from './../types/users.types';
 import { getPublicIdFromImagePath } from '../utils';
 import createError from 'http-errors';
 import type { RequestHandler } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import type { IProduct, IUpvote } from '../types';
-import { Product, Upvote } from '../models';
+import { Product, Upvote, User } from '../models';
 
 const create: RequestHandler = (req, res, next) => {
   const { name, alias, tagline, description, logo, website, gallery } = req.body;
@@ -39,23 +40,28 @@ const get: RequestHandler = (req, res, next) => {
       if (!product) {
         return next(createError(404, 'Product not found'));
       } else {
-        if (req.user) {
-          Upvote.findOne({
-            upvotedBy: req.user.id,
-            product: product.id
-          }).then((upvote: IUpvote) => {
-            const newProduct = product.toObject();
-            if (upvote) {
-              newProduct.upvoted = true;
-            } else {
-              newProduct.upvoted = false;
-            }
-            return res.status(200).json(newProduct);
-          });
-        }
-        const newProduct = product.toObject();
-        newProduct.upvoted = false;
-        res.status(200).json(newProduct);
+        User.findById(product.createdBy, 'address avatar').then((user: IUser) => {
+          if (!user) {
+            return next(createError(404, 'The user has removed its profile'));
+          }
+          if (req.user) {
+            Upvote.findOne({
+              upvotedBy: req.user.id,
+              product: product.id
+            }).then((upvote: IUpvote) => {
+              const newProduct = product.toObject();
+              if (upvote) {
+                newProduct.upvoted = true;
+              } else {
+                newProduct.upvoted = false;
+              }
+              return res.status(200).json(newProduct);
+            });
+          }
+          const newProduct = product.toObject();
+          newProduct.upvoted = false;
+          res.status(200).json({ ...newProduct, user });
+        });
       }
     })
     .catch(next);
