@@ -17,6 +17,7 @@ router.post('/product/:alias/upvote', isAuthenticated, upvote.upvoteProduct);
 router.delete('/product/:alias/upvote', isAuthenticated, upvote.downvoteProduct);
 
 // Products
+router.get('/feed', product.feed);
 router.post('/product', isAuthenticated, product.create);
 router.get('/product/:alias', product.get);
 router.put('/product/:alias/update', isAuthenticated, existingProductChecker, isProductOwner, product.updateCommons);

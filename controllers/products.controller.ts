@@ -148,11 +148,50 @@ const remove: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
+const feed: RequestHandler = async (req, res, next) => {
+  const limit = 10;
+  const skip = 0;
+
+  try {
+    const productList = await Product.find({}, 'name logo tagline createdAt')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('upvotes');
+
+    const newProducts = productList.map(async (product: IProduct) => {
+      let upvotedByMe = false;
+
+      if (req.user) {
+        upvotedByMe = await Upvote.findOne({
+          upvotedBy: req.user.id,
+          product: product.id
+        });
+      }
+
+      const newProduct = product.toObject();
+
+      if (upvotedByMe) {
+        newProduct.upvoted = true;
+      } else {
+        newProduct.upvoted = false;
+      }
+
+      return newProduct;
+    });
+    const products = await Promise.all(newProducts);
+    res.status(200).json(products);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const product = {
   create,
   get,
   updateCommons,
   updateLogo,
   updateCoverImage,
-  remove
+  remove,
+  feed
 };
