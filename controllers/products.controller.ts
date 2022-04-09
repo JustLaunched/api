@@ -153,7 +153,7 @@ const feed: RequestHandler = async (req, res, next) => {
   const skip = 0;
 
   try {
-    const productList = await Product.find({}, 'name logo tagline createdAt')
+    const productList = await Product.find({}, 'name alias logo tagline createdAt')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
