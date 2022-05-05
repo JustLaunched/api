@@ -148,9 +148,17 @@ const remove: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const feed: RequestHandler = async (req, res, next) => {
+type Params = {};
+type ResBody = {};
+type ReqBody = {};
+type ReqQuery = {
+  limit: string;
+  skip: string;
+};
+
+const feed: RequestHandler<Params, ResBody, ReqBody, ReqQuery> = async (req, res, next) => {
   const limit = 10;
-  const skip = 0;
+  const skip = parseInt(req.query.skip);
 
   try {
     const productList = await Product.find({}, 'name alias logo tagline createdAt')
@@ -158,6 +166,8 @@ const feed: RequestHandler = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .populate('upvotes');
+
+    const pages = (await Product.countDocuments({})) / limit;
 
     const newProducts = productList.map(async (product: IProduct) => {
       let upvotedByMe = false;
@@ -180,7 +190,8 @@ const feed: RequestHandler = async (req, res, next) => {
       return newProduct;
     });
     const products = await Promise.all(newProducts);
-    res.status(200).json(products);
+
+    res.status(200).json({ products, pages });
   } catch (err) {
     next(err);
   }
