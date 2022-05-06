@@ -158,7 +158,7 @@ type ReqQuery = {
 
 const feed: RequestHandler<Params, ResBody, ReqBody, ReqQuery> = async (req, res, next) => {
   const limit = 10;
-  const skip = parseInt(req.query.skip);
+  const skip = Number(req.query.skip);
 
   try {
     const productList = await Product.find({}, 'name alias logo tagline createdAt')

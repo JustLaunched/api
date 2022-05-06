@@ -134,11 +134,21 @@ const deleteUser: RequestHandler = (req, res, next) => {
 
 const getUserProducts: RequestHandler = (req, res, next) => {
   const { address } = req.params;
+  const limit = 10;
+  const skip = Number(req.query.skip);
+
   User.findOne({ address })
     .then((user) => {
       if (user) {
-        Product.find({ createdBy: user.id }).then((products: IProduct) => {
-          res.status(200).json(products);
+        Product.countDocuments({ createdBy: user.id }).then((documents: number) => {
+          const pages = documents / limit;
+          Product.find({ createdBy: user.id })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .then((products: IProduct) => {
+              res.status(200).json({ products, pages });
+            });
         });
       } else {
         next(createError(404, 'User not found'));
