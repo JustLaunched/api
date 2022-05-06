@@ -1,5 +1,6 @@
 import { setImageFolder } from './../utils/setImageFolder';
 import multer from 'multer';
+import { Express } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import type { Options } from 'multer-storage-cloudinary';

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import type { ErrorRequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import mongoose from 'mongoose';
 import express from 'express';
 import createError from 'http-errors';
@@ -26,16 +26,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/v0', router);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   next(createError(404, 'Route not found'));
 });
 
 // error handler
-app.use(function (error, req, res, next) {
-  if (error instanceof mongoose.Error.ValidationError) error = createError(400, error);
-  else if (error instanceof mongoose.Error.CastError) error = createError(404, 'Resource not found');
-  /* else if (error.message.includes('E11000')) error = createError(400, 'Already exists'); */
-  else if (!error.status) error = createError(500, error);
+app.use((error: any, req: any, res: any) => {
+  if (error instanceof mongoose.Error.ValidationError) {
+    error = createError(400, error);
+  } else if (error instanceof mongoose.Error.CastError) {
+    error = createError(404, 'Resource not found');
+  } else if (!error.status) {
+    error = createError(500, error);
+  }
 
   const data = { message: '', errors: {} };
   data.message = error.message;
@@ -47,7 +50,7 @@ app.use(function (error, req, res, next) {
     : undefined;
 
   res.status(error.status).json(data);
-} as ErrorRequestHandler);
+});
 
 const port = 3000;
 

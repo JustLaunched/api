@@ -29,7 +29,7 @@ const userSchema = new Schema<IUser>(
     },
     about: {
       type: String,
-      maxlength: [1000, 'About section is too long.'],
+      maxlength: [1000, 'About section is too long.']
     },
     avatar: {
       type: String,
@@ -53,7 +53,7 @@ const userSchema = new Schema<IUser>(
           throw new Error('Invalid URL.');
         }
       }
-    },
+    }
   },
   {
     timestamps: true,

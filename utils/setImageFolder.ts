@@ -1,12 +1,12 @@
-enum Folder {
-  coverImage = 'cover-image',
-  logo = 'logo',
-  avatar = 'avatar'
+const folder = {
+  coverImage: 'cover-image',
+  logo: 'logo',
+  avatar: 'avatar'
 }
 
 export const setImageFolder = (path: string) => {
   return new Promise((resolve) => {
-    Object.values(Folder).forEach((folder: Folder) => {
+    Object.values(folder).forEach((folder) => {
       if (path.includes(folder)) {
         resolve(folder);
       }

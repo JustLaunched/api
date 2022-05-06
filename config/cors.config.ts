@@ -15,4 +15,4 @@ export default cors({
       next(createError(401, 'Not allowed by CORS'));
     }
   }
-})
+});
