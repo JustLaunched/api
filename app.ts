@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import type { RequestHandler } from 'express';
 import mongoose from 'mongoose';
 import express from 'express';
 import createError from 'http-errors';
 // import path from 'path';
 import logger from 'morgan';
 import router from './config/routes.config';
+/* @ts-ignore */
 import session from './config/session.config';
 import passport from './config/passport.config';
 import cors from './config/cors.config';

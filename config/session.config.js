@@ -1,5 +1,7 @@
 import expressSession from 'express-session';
-import MongoStore from 'connect-mongo';
+import MongoStore from 'connect-mongostore';
+
+MongoStore(expressSession);
 
 const session = expressSession({
   secret: process.env.SESSION_SECRET || 'super secret (change it)',
@@ -12,8 +14,7 @@ const session = expressSession({
   },
   store: new MongoStore({
     ttl: Number(process.env.SESSION_MAX_AGE) || 3600,
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/justlaunched',
-    mongoOptions: { useUnifiedTopology: true }
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/justlaunched'
   })
 });
 
