@@ -1,10 +1,9 @@
-import type { IProduct } from '../types';
-import mongoose from 'mongoose';
-import validator from 'validator';
+const mongoose = require('mongoose');
+const validator = require('validator');
 
 const Schema = mongoose.Schema;
 
-const productSchema = new Schema<IProduct>(
+const productSchema = new Schema(
   {
     name: {
       type: String,
@@ -16,7 +15,7 @@ const productSchema = new Schema<IProduct>(
       required: 'Alias is required',
       maxlength: [40, 'Alias is too long.'],
       unique: true,
-      validate: (value: string) => {
+      validate: (value) => {
         if (!validator.isAlphanumeric(value)) {
           throw new Error('Alias can only contain letters and numbers');
         }
@@ -51,7 +50,7 @@ const productSchema = new Schema<IProduct>(
     twitter: {
       type: String,
       maxlength: [150, 'Twitter URL is too long.'],
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
@@ -60,7 +59,7 @@ const productSchema = new Schema<IProduct>(
     discord: {
       type: String,
       maxlength: [150, 'Discord URL is too long.'],
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
@@ -69,7 +68,7 @@ const productSchema = new Schema<IProduct>(
     telegram: {
       type: String,
       maxlength: [150, 'Telegram URL is too long.'],
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
@@ -79,7 +78,7 @@ const productSchema = new Schema<IProduct>(
       type: String,
       required: 'Website is required',
       maxlength: [150, 'Website URL is too long.'],
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
@@ -121,4 +120,5 @@ productSchema.virtual('upvotes', {
   count: true
 });
 
-export const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+module.exports = Product;

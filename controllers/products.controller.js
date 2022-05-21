@@ -1,12 +1,12 @@
-import { IUser } from './../types/users.types';
-import { getPublicIdFromImagePath } from '../utils';
-import createError from 'http-errors';
-import type { RequestHandler } from 'express';
-import { v2 as cloudinary } from 'cloudinary';
-import type { IProduct, IUpvote } from '../types';
-import { Product, Upvote, User } from '../models';
+const getPublicIdFromImagePath = require('../utils/getPublicIdFromImagePath');
+const createError = require('http-errors');
+const cloudinary = require('cloudinary').v2;
+// models
+const Product = require('../models/product.model');
+const Upvote = require('../models/upvote.model');
+const User = require('../models/user.model');
 
-const create: RequestHandler = (req, res, next) => {
+const create = (req, res, next) => {
   const { name, alias, tagline, description, logo, website, gallery } = req.body;
   const productData = {
     name,
@@ -19,7 +19,7 @@ const create: RequestHandler = (req, res, next) => {
     gallery
   };
 
-  Product.findOne({ alias }).then((product: IProduct) => {
+  Product.findOne({ alias }).then((product) => {
     if (product) {
       return next(createError(400, { errors: { alias: 'This alias is taken' } }));
     } else {
@@ -32,15 +32,15 @@ const create: RequestHandler = (req, res, next) => {
   });
 };
 
-const get: RequestHandler = (req, res, next) => {
+const get = (req, res, next) => {
   const { alias } = req.params;
   Product.findOne({ alias: alias.toLowerCase() })
     .populate('upvotes')
-    .then((product: IProduct) => {
+    .then((product) => {
       if (!product) {
         return next(createError(404, 'Product not found'));
       } else {
-        User.findById(product.createdBy, 'address avatar').then((user: IUser) => {
+        User.findById(product.createdBy, 'address avatar').then((user) => {
           if (!user) {
             return next(createError(404, 'The user has removed its profile'));
           }
@@ -48,7 +48,7 @@ const get: RequestHandler = (req, res, next) => {
             Upvote.findOne({
               upvotedBy: req.user.id,
               product: product.id
-            }).then((upvote: IUpvote) => {
+            }).then((upvote) => {
               const newProduct = product.toObject();
               if (upvote) {
                 newProduct.upvoted = true;
@@ -67,7 +67,7 @@ const get: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const updateCommons: RequestHandler = (req, res, next) => {
+const updateCommons = (req, res, next) => {
   const {
     name: newName,
     tagline: newTagLine,
@@ -81,7 +81,7 @@ const updateCommons: RequestHandler = (req, res, next) => {
   } = req.body;
   const { alias: aliasFromParams } = req.params;
   const alias = aliasFromParams.toLowerCase();
-  const product: IProduct = res.locals.product;
+  const product = res.locals.product;
 
   Object.assign(product, {
     name: newName,
@@ -95,18 +95,18 @@ const updateCommons: RequestHandler = (req, res, next) => {
     gallery: newGallery
   });
   Product.findOneAndUpdate({ alias }, product, { runValidators: true, new: true, useFindAndModify: false })
-    .then((product: IProduct) => res.status(202).json(product))
+    .then((product) => res.status(202).json(product))
     .catch(next);
 };
 
-const updateLogo: RequestHandler = (req, res, next) => {
+const updateLogo = (req, res, next) => {
   let prevImagePublicId = '';
-  const product: IProduct = res.locals.product;
+  const product = res.locals.product;
   if (req.file) {
     prevImagePublicId = getPublicIdFromImagePath(product.logo);
     Object.assign(product, { logo: req.file.path });
     Product.findByIdAndUpdate(product.id, product, { runValidators: true, new: true, useFindAndModify: false })
-      .then((updatedProduct: IProduct) => {
+      .then((updatedProduct) => {
         const newImagePublicId = getPublicIdFromImagePath(req.file.path);
         if (prevImagePublicId && prevImagePublicId !== newImagePublicId) {
           cloudinary.uploader.destroy(prevImagePublicId);
@@ -119,15 +119,15 @@ const updateLogo: RequestHandler = (req, res, next) => {
   }
 };
 
-const updateCoverImage: RequestHandler = (req, res, next) => {
+const updateCoverImage = (req, res, next) => {
   let prevImagePublicId = '';
-  const product: IProduct = res.locals.product;
+  const product = res.locals.product;
 
   if (req.file) {
     prevImagePublicId = getPublicIdFromImagePath(product.coverImage);
     Object.assign(product, { coverImage: req.file.path });
     Product.findByIdAndUpdate(product.id, product, { runValidators: true, new: true, useFindAndModify: false })
-      .then((product: IProduct) => {
+      .then((product) => {
         const newImagePublicId = getPublicIdFromImagePath(req.file.path);
         if (prevImagePublicId && prevImagePublicId !== newImagePublicId) {
           cloudinary.uploader.destroy(prevImagePublicId);
@@ -140,23 +140,15 @@ const updateCoverImage: RequestHandler = (req, res, next) => {
   }
 };
 
-const remove: RequestHandler = (req, res, next) => {
-  const product = res.locals.product as IProduct;
+const remove = (req, res, next) => {
+  const product = res.locals.product;
 
   return Product.findByIdAndDelete(product.id)
     .then(() => res.status(204).end())
     .catch(next);
 };
 
-type Params = {};
-type ResBody = {};
-type ReqBody = {};
-type ReqQuery = {
-  limit: string;
-  skip: string;
-};
-
-const feed: RequestHandler<Params, ResBody, ReqBody, ReqQuery> = async (req, res, next) => {
+const feed = async (req, res, next) => {
   const limit = 10;
   const skip = Number(req.query.skip);
 
@@ -169,7 +161,7 @@ const feed: RequestHandler<Params, ResBody, ReqBody, ReqQuery> = async (req, res
 
     const pages = (await Product.countDocuments({})) / limit;
 
-    const newProducts = productList.map(async (product: IProduct) => {
+    const newProducts = productList.map(async (product) => {
       let upvotedByMe = false;
 
       if (req.user) {
@@ -197,7 +189,7 @@ const feed: RequestHandler<Params, ResBody, ReqBody, ReqQuery> = async (req, res
   }
 };
 
-export const product = {
+const product = {
   create,
   get,
   updateCommons,
@@ -206,3 +198,5 @@ export const product = {
   remove,
   feed
 };
+
+module.exports = product;

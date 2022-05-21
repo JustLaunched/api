@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/justlaunched';
 
 mongoose
-  .connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true })
+  .connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => console.info(`Successfully connected to the database ${MONGODB_URI}`))
-  .catch((error: Error) => {
+  .catch((error) => {
     console.error(`An error ocurred trying to connect to de database ${MONGODB_URI}`, error);
     process.exit(0);
   });

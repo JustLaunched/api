@@ -1,18 +1,17 @@
-import type { IUser } from './../types';
-import mongoose from 'mongoose';
-import validator from 'validator';
-import createError from 'http-errors';
+const mongoose = require('mongoose');
+const validator = require('validator');
+const createError = require('http-errors');
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema(
   {
     address: {
       type: String,
       required: 'Ethereum address is required',
       lowercase: true,
       unique: true,
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isEthereumAddress(value)) {
           throw new Error('Invalid Ethereum address');
         }
@@ -21,7 +20,7 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       lowercase: true,
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isEmail(value)) {
           throw new Error('Invalid email');
         }
@@ -48,7 +47,7 @@ const userSchema = new Schema<IUser>(
     },
     website: {
       type: String,
-      validate: (value: string) => {
+      validate: (value) => {
         if (value && !validator.isURL(value, { require_protocol: true })) {
           throw new Error('Invalid URL.');
         }
@@ -88,4 +87,5 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-export const User = mongoose.model<IUser>('User', userSchema);
+const User = mongoose.model('User', userSchema);
+module.exports = User;

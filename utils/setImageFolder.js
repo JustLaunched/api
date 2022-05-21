@@ -4,7 +4,7 @@ const folder = {
   avatar: 'avatar'
 }
 
-export const setImageFolder = (path: string) => {
+const setImageFolder = (path) => {
   return new Promise((resolve) => {
     Object.values(folder).forEach((folder) => {
       if (path.includes(folder)) {
@@ -15,3 +15,5 @@ export const setImageFolder = (path: string) => {
     .then((folder) => folder)
     .catch(() => 'default');
 };
+
+module.exports = setImageFolder;

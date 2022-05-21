@@ -1,12 +1,13 @@
-import type { IUserProfile, IUser, IProduct } from './../types';
-import type { RequestHandler } from 'express';
-import createError from 'http-errors';
-import passport from 'passport';
-import { User, Product, Upvote } from '../models';
+const createError = require('http-errors');
+const passport = require('passport');
+// models
+const Product = require('../models/product.model');
+const Upvote = require('../models/upvote.model');
+const User = require('../models/user.model');
 
-const create: RequestHandler = (req, res, next) => {
+const create = (req, res, next) => {
   User.findOne({ adress: req.body.address })
-    .then((user: IUser) => {
+    .then((user) => {
       if (user) {
         res.redirect('/login');
       } else {
@@ -17,9 +18,9 @@ const create: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const login: RequestHandler = (req, res, next) => {
+const login = (req, res, next) => {
   User.findOne({ address: req.body.address })
-    .then((user: IUser) => {
+    .then((user) => {
       if (user) {
         passport.authenticate('local', (error, user) => {
           if (error) {
@@ -49,16 +50,16 @@ const login: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const logout: RequestHandler = (req, res, next) => {
+const logout = (req, res, next) => {
   req.logout();
 
   res.status(204).end();
 };
 
-const get: RequestHandler = (req, res, next) => {
+const get = (req, res, next) => {
   const { address } = req.params;
   User.findOne({ address })
-    .then((user: IUser) => {
+    .then((user) => {
       if (!user) next(createError(404, 'User not found'));
       else {
         res.status(200).json(user);
@@ -67,8 +68,8 @@ const get: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const updateProfile: RequestHandler = (req, res, next) => {
-  const updatedUser: IUserProfile = {
+const updateProfile = (req, res, next) => {
+  const updatedUser = {
     about: req.body?.about,
     website: req.body?.website,
     email: req.body?.email,
@@ -76,7 +77,7 @@ const updateProfile: RequestHandler = (req, res, next) => {
   };
   const loggedUser = JSON.parse(JSON.stringify(req.user));
 
-  Object.keys(updatedUser).forEach((key: keyof IUserProfile) => {
+  Object.keys(updatedUser).forEach((key) => {
     if (updatedUser[key] === undefined) {
       delete updatedUser[key];
     }
@@ -90,7 +91,7 @@ const updateProfile: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const updateAvatar: RequestHandler = (req, res, next) => {
+const updateAvatar = (req, res, next) => {
   if (req.file) {
     User.findByIdAndUpdate(
       req.user.id,
@@ -104,7 +105,7 @@ const updateAvatar: RequestHandler = (req, res, next) => {
   }
 };
 
-const updateCoverImage: RequestHandler = (req, res, next) => {
+const updateCoverImage = (req, res, next) => {
   if (req.file) {
     User.findByIdAndUpdate(
       req.user.id,
@@ -118,7 +119,7 @@ const updateCoverImage: RequestHandler = (req, res, next) => {
   }
 };
 
-const deleteUser: RequestHandler = (req, res, next) => {
+const deleteUser = (req, res, next) => {
   User.findOne({ address: req.params.address.toLowerCase() })
     .then((user) => {
       Product.deleteMany({ createdBy: user.id }).then(() => {
@@ -132,7 +133,7 @@ const deleteUser: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-const getUserProducts: RequestHandler = (req, res, next) => {
+const getUserProducts = (req, res, next) => {
   const { address } = req.params;
   const limit = 10;
   const skip = Number(req.query.skip);
@@ -140,13 +141,13 @@ const getUserProducts: RequestHandler = (req, res, next) => {
   User.findOne({ address })
     .then((user) => {
       if (user) {
-        Product.countDocuments({ createdBy: user.id }).then((documents: number) => {
+        Product.countDocuments({ createdBy: user.id }).then((documents) => {
           const pages = documents / limit;
           Product.find({ createdBy: user.id })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .then((products: IProduct) => {
+            .then((products) => {
               res.status(200).json({ products, pages });
             });
         });
@@ -157,7 +158,7 @@ const getUserProducts: RequestHandler = (req, res, next) => {
     .catch(next);
 };
 
-export const user = {
+const user = {
   create,
   get,
   getUserProducts,
@@ -168,3 +169,5 @@ export const user = {
   updateCoverImage,
   deleteUser
 };
+
+module.exports = user;

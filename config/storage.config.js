@@ -1,9 +1,7 @@
-import { setImageFolder } from './../utils/setImageFolder';
-import multer from 'multer';
-import { Express } from 'express';
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import type { Options } from 'multer-storage-cloudinary';
+const setImageFolder = require('../utils/setImageFolder');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const CloudinaryStorage = require('multer-storage-cloudinary').CloudinaryStorage;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -14,21 +12,17 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: (req: any) => setImageFolder(req.path),
+    folder: (req) => setImageFolder(req.path),
     format: 'jpeg',
-    public_id: async (req: any) => {
+    public_id: async (req) => {
       const { alias, address } = req.params;
       const folder = await setImageFolder(req.path);
       return `${alias || address}_${folder}`;
     }
   }
-} as Options);
+});
 
-const fileFilter = (
-  req: Express.Request,
-  file: Express.Multer.File,
-  callback: (error: Error | null, validFile: boolean, message?: string) => void
-) => {
+const fileFilter = (req, file, callback) => {
   const validExtensions = ['png', 'jpg', 'jpeg', 'PNG', 'JPG', 'JPEG'];
   const ext = file.originalname.split('.').pop();
   if (!validExtensions.includes(ext)) {
@@ -38,4 +32,4 @@ const fileFilter = (
   callback(null, true);
 };
 
-export default multer({ storage, fileFilter, limits: { fileSize: 5000000 } }); // 5MB
+module.exports = multer({ storage, fileFilter, limits: { fileSize: 5000000 } }); // 5MB

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -27,4 +27,5 @@ const upvoteSchema = new Schema(
   }
 );
 
-export const Upvote = mongoose.model('Upvote', upvoteSchema);
+const Upvote = mongoose.model('Upvote', upvoteSchema);
+module.exports = Upvote;

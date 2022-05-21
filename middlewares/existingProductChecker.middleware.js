@@ -1,11 +1,10 @@
-import { IProduct } from '../types/product.types'
-import { Product } from '../models';
-import { RequestHandler } from 'express';
-import createError from 'http-errors';
+const createError = require('http-errors');
+// models
+const Product = require('../models/product.model');
 
-export const existingProductChecker: RequestHandler = (req, res, next) => {
+const existingProductChecker = (req, res, next) => {
   Product.findOne({ alias: req.params.alias.toLowerCase() })
-    .then((product: IProduct) => {
+    .then((product) => {
       if (!product) {
         next(createError(404, 'Product not found'));
       } else {
@@ -15,3 +14,4 @@ export const existingProductChecker: RequestHandler = (req, res, next) => {
     })
     .catch(() => next(createError(500, 'Internal Server Error')))
 };
+module.exports = existingProductChecker;

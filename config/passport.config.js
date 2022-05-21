@@ -1,6 +1,6 @@
-import passport from 'passport';
-import { User } from '../models/user.model';
-import * as PassportLocal from 'passport-local';
+const passport = require('passport');
+const User = require('../models/user.model');
+const PassportLocal = require('passport-local');
 
 passport.serializeUser((user, next) => {
   next(null, user.id);
@@ -32,4 +32,4 @@ passport.use(
   )
 );
 
-export default passport;
+module.exports = passport;

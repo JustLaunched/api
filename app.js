@@ -1,16 +1,15 @@
-import 'dotenv/config';
-import mongoose from 'mongoose';
-import express from 'express';
-import createError from 'http-errors';
-// import path from 'path';
-import logger from 'morgan';
-import router from './config/routes.config';
-/* @ts-ignore */
-import session from './config/session.config';
-import passport from './config/passport.config';
-import cors from './config/cors.config';
-import './config/db.config';
-const app: express.Application = express();
+require('dotenv/config');
+const mongoose = require('mongoose');
+const express = require('express');
+const createError = require('http-errors');
+// const path = require('path');
+const logger = require('morgan');
+const router = require('./config/routes.config');
+const session = require('./config/session.config');
+const passport = require('./config/passport.config');
+const cors = require('./config/cors.config');
+require('./config/db.config');
+const app = express();
 
 app.use(express.json());
 app.use(logger('dev'));
@@ -31,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((error: any, req: any, res: any) => {
+app.use((error, req, res) => {
   if (error instanceof mongoose.Error.ValidationError) {
     error = createError(400, error);
   } else if (error instanceof mongoose.Error.CastError) {
@@ -44,9 +43,9 @@ app.use((error: any, req: any, res: any) => {
   data.message = error.message;
   data.errors = error.errors
     ? Object.keys(error.errors).reduce(
-        (errors, key) => ({ ...errors, [key]: error.errors[key]?.message || error.errors[key] }),
-        {}
-      )
+      (errors, key) => ({ ...errors, [key]: error.errors[key]?.message || error.errors[key] }),
+      {}
+    )
     : undefined;
 
   res.status(error.status).json(data);

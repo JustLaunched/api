@@ -1,16 +1,18 @@
-import { upvote } from './../controllers/upvotes.controller';
-import { existingUserChecker } from './../middlewares/existingUserChecker.middleware';
-import { isUserOwner } from './../middlewares/isUserOwner.middleware';
-import type { Router } from 'express';
-import express from 'express';
+const upvote = require('../controllers/upvotes.controller')
+const existingUserChecker = require('../middlewares/existingUserChecker.middleware');
+const isUserOwner = require('../middlewares/isUserOwner.middleware');
+const express = require('express');
 // config
-import storage from './storage.config';
+const storage = require('./storage.config');
 // middlewares
-import { isAuthenticated, isProductOwner, existingProductChecker } from '../middlewares';
+const isAuthenticated = require('../middlewares/isAuthenticated.middleware');
+const isProductOwner = require('../middlewares/isProductOwner.middleware');
+const existingProductChecker = require('../middlewares/existingProductChecker.middleware');
 // controllers
-import { product, user } from '../controllers';
+const product = require('../controllers/products.controller')
+const user = require('../controllers/users.controller')
 
-const router: Router = express.Router();
+const router = express.Router();
 
 // Upvotes
 router.post('/product/:alias/upvote', isAuthenticated, upvote.upvoteProduct);
@@ -66,4 +68,4 @@ router.delete('/user/:address/delete', isAuthenticated, existingUserChecker, isU
 router.post('/login', user.login);
 router.post('/logout', isAuthenticated, user.logout);
 
-export default router;
+module.exports = router;
