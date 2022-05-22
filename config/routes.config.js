@@ -15,7 +15,7 @@ const user = require('../controllers/users.controller')
 const router = express.Router();
 
 // Test
-router.get('/', (req, res, next) => res.json('hello world!'));
+router.get('/', (req, res, next) => res.json('hello world'));
 
 // Upvotes
 router.post('/product/:alias/upvote', isAuthenticated, upvote.upvoteProduct);

@@ -52,6 +52,8 @@ app.use((error, req, res) => {
 
 const port = 3000;
 
-app.listen(port, () => console.log(`Server listening at port ${port}`));
+app.listen(process.env.PORT || 3000, function() {
+  console.log(`Server listening at port ${port}`)
+});
 
 module.exports = app;
