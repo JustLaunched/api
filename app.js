@@ -7,14 +7,13 @@ const logger = require('morgan');
 const router = require('./config/routes.config');
 const session = require('./config/session.config');
 const passport = require('./config/passport.config');
-const cors = require('./config/cors.config');
+// const cors = require('./config/cors.config');
 require('./config/db.config');
 const app = express();
 
 app.use(express.json());
 app.use(logger('dev'));
 app.use(session);
-app.use(cors);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
@@ -22,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // configure routes
-app.use('/api/v0', router);
+app.use('/', router);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
