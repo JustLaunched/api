@@ -189,6 +189,54 @@ const feed = async (req, res, next) => {
   }
 };
 
+const posts = async (req, res, next) => {
+  const { daysAgo, date } = req.query;
+
+  const now = new Date();
+  const today = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${now.getUTCDate()}`;
+
+  const formattedDate = date ? new Date(date) : new Date(today);
+  const requestedDate = formattedDate.setDate(formattedDate.getDate() - daysAgo);
+  const nextDate = formattedDate.setDate(formattedDate.getDate() + 1);
+
+  const productList = await Product.find(
+    {
+      createdAt: {
+        $gte: requestedDate,
+        $lt: nextDate
+      }
+    },
+    'name alias logo tagline createdAt website'
+  )
+    .sort({ createdAt: -1 })
+    .populate('upvotes');
+
+  const newProducts = productList.map(async (product) => {
+    let upvotedByMe = false;
+
+    if (req.user) {
+      upvotedByMe = await Upvote.findOne({
+        upvotedBy: req.user.id,
+        product: product.id
+      });
+    }
+
+    const newProduct = product.toObject();
+
+    if (upvotedByMe) {
+      newProduct.upvoted = true;
+    } else {
+      newProduct.upvoted = false;
+    }
+
+    return newProduct;
+  });
+
+  const products = await Promise.all(newProducts);
+
+  res.status(200).json(products);
+};
+
 const product = {
   create,
   get,
@@ -196,7 +244,8 @@ const product = {
   updateLogo,
   updateCoverImage,
   remove,
-  feed
+  feed,
+  posts
 };
 
 module.exports = product;

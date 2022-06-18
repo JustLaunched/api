@@ -43,6 +43,7 @@ router.put(
   product.updateCoverImage
 );
 router.delete('/product/:alias', isAuthenticated, existingProductChecker, isProductOwner, product.remove);
+router.get('/products', product.posts)
 
 // Users
 router.post('/user', user.create);
