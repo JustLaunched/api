@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const cors = require('cors');
 
-const allowedOrigins = (process.env.CORS_ORIGINS || ['http://localhost:8083', 'https://web-jade-phi.vercel.app'])
+const allowedOrigins = (process.env.CORS_ORIGINS || ['http://localhost:8083', 'https://justlaunched.xyz'])
   .split(',')
   .map(o => o.trim());
 
