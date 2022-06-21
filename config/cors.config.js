@@ -1,9 +1,7 @@
 const createError = require('http-errors');
 const cors = require('cors');
 
-const allowedOrigins = (['http://localhost:8083', 'https://justlaunched.xy'])
-  .split(',')
-  .map(o => o.trim());
+const allowedOrigins = (['http://localhost:8083', 'https://justlaunched.xyz']);
 
 module.exports = cors({
   credentials: true,
