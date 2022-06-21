@@ -5,6 +5,7 @@ const allowedOrigins = (['http://localhost:8083', 'https://justlaunched.xyz']);
 
 module.exports = cors({
   credentials: true,
+  sameSite: 'none',
   origin: (origin, next) => {
     const allowed = !origin || allowedOrigins.indexOf(origin) !== -1;
     if (allowed) {
