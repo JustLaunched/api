@@ -13,6 +13,7 @@ const app = express();
 
 app.use(express.json());
 app.use(logger('dev'));
+app.set("trust proxy", 1);
 app.use(session);
 app.use(cors);
 app.use(passport.initialize());
